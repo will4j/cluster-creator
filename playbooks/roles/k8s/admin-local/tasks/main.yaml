@@ -1,0 +1,14 @@
+---
+- name: Config local host as kubernetes admin
+  block:
+    - name: Fetch /etc/kubernetes/admin.conf
+      run_once: true
+      ansible.builtin.fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: ~/.kube/{{ cluster.name }}-config
+        flat: true
+    - name: Chmod 600 of {{ cluster.name }}-config
+      run_once: true
+      become: false
+      delegate_to: localhost
+      ansible.builtin.command: chmod 600 ~/.kube/{{ cluster.name }}-config

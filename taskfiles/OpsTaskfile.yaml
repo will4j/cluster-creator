@@ -24,3 +24,9 @@ tasks:
     cmds:
       - echo "Caution !!! This will Reboot all hosts, make sure you know what you are doing"
       - ansible-playbook -i inventory/cluster-hosts.yaml --ask-vault-pass --tags "reboot" playbooks/kube-cluster.yaml
+
+  admin-local:
+    desc: download cluster admin config to localhost
+    cmds:
+      - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password --tags "admin-local" playbooks/kube-cluster.yaml
+      - echo "execute export KUBECONFIG=\"/home/xxxx/.kube/xxxx-config\" to use config"

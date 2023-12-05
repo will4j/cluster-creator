@@ -28,11 +28,14 @@
     - role: k8s/init-node
 
 - hosts: first_control_planes
-  tags:
-    - init-cluster
   become: yes
   roles:
     - role: k8s/init-cluster
+      tags:
+        - init-cluster
+    - role: k8s/admin-local
+      tags:
+        - admin-local
 
 - hosts: rest_control_planes
   tags:
