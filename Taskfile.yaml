@@ -11,6 +11,7 @@ includes:
 
 tasks:
   default:
+    desc: list available tasks
     silent: true
     cmds:
       - task --list
