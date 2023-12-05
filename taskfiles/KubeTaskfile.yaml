@@ -54,6 +54,7 @@ tasks:
       - task: kube-cluster
         vars:
           TAGS: init-cluster,admin-local
+      - cmd: echo 'execute export KUBECONFIG="/home/xxxx/.kube/xxxx-config" to use config'
 
   2.2:
     desc: init cni plugin cilium
