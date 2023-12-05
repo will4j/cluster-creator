@@ -7,7 +7,7 @@
     release_namespace: storage
     create_namespace: true
     # # https://artifacthub.io/packages/helm/bitnami/mongodb
-    chart_ref: helm/charts/mongodb-14.3.2.tgz
+    chart_ref: ../helm/charts/mongodb-14.3.2.tgz
     values: "{{ lookup('ansible.builtin.template', 'values.yaml.j2') | from_yaml }}"
     state: present
     wait: true

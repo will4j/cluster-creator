@@ -13,7 +13,7 @@
     release_namespace: cert-manager
     create_namespace: yes
     # https://artifacthub.io/packages/helm/cert-manager/cert-manager
-    chart_ref: helm/charts/cert-manager-v1.13.2.tgz
+    chart_ref: ../helm/charts/cert-manager-v1.13.2.tgz
     values: "{{ lookup('ansible.builtin.file', 'values.yaml') | from_yaml }}"
     state: present
     wait: true

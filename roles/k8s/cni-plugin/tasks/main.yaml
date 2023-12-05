@@ -8,7 +8,7 @@
     release_namespace: kube-system
     create_namespace: true
     # https://artifacthub.io/packages/helm/cilium/cilium
-    chart_ref: helm/charts/cilium-1.14.4.tgz
+    chart_ref: ../helm/charts/cilium-1.14.4.tgz
     values: "{{ lookup('ansible.builtin.file', 'cilium-values.yaml') | from_yaml }}"
     state: present
     wait: true

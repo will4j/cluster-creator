@@ -7,6 +7,6 @@
     release_namespace: storage
     create_namespace: yes
     # https://artifacthub.io/packages/helm/nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
-    chart_ref: helm/charts//nfs-subdir-external-provisioner-4.0.18.tgz
+    chart_ref: ../helm/charts//nfs-subdir-external-provisioner-4.0.18.tgz
     values: "{{ lookup('ansible.builtin.template', 'values.yaml.j2') | from_yaml }}"
     state: present
