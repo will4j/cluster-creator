@@ -1,0 +1,23 @@
+# https://github.com/kubernetes-sigs/metrics-server/blob/master/charts/metrics-server/values.yaml
+image:
+  repository: m.daocloud.io/registry.k8s.io/metrics-server/metrics-server
+  # Overrides the image tag whose default is v{{ .Chart.AppVersion }}
+  tag: "v0.6.4"
+  pullPolicy: IfNotPresent
+
+defaultArgs:
+  - --cert-dir=/tmp
+  - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+  - --kubelet-use-node-status-port
+  - --metric-resolution=10s
+
+args:
+  - --kubelet-insecure-tls
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists

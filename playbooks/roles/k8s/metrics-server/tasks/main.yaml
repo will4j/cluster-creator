@@ -1,0 +1,14 @@
+---
+- name: Create metrics-server
+  become: false
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: metrics-server
+    release_namespace: monitoring
+    create_namespace: yes
+    # # https://artifacthub.io/packages/helm/metrics-server/metrics-server
+    chart_ref: helm/charts/metrics-server-3.11.0.tgz
+    values: "{{ lookup('ansible.builtin.file', 'values.yaml') | from_yaml }}"
+    state: present
+    wait: true
