@@ -1,0 +1,13 @@
+---
+- name: Create kubernetes-dashboard
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: kubernetes-dashboard
+    release_namespace: dashboard
+    create_namespace: true
+    # https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
+    chart_ref: helm/charts/kubernetes-dashboard-7.0.0-alpha1.tgz
+    values: "{{ lookup('ansible.builtin.template', 'values.yaml.j2') | from_yaml }}"
+    state: present
+    wait: true

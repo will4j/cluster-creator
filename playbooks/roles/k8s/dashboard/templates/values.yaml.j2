@@ -1,0 +1,75 @@
+# https://github.com/kubernetes/dashboard/blob/master/charts/helm-chart/kubernetes-dashboard/values.yaml
+
+metrics-server:
+  enabled: false
+cert-manager:
+  enabled: false
+nginx:
+  enabled: false
+app:
+  ingress:
+    enabled: true
+    hosts:
+      - {{ dashboard.host }}
+    ingressClassName: "nginx"
+    issuer:
+      name: {{ cert.cluster_issuer_name }}
+      scope: cluster
+api:
+  image:
+    repository: m.daocloud.io/docker.io/kubernetesui/dashboard-api
+    tag: v1.0.0
+  containers:
+    # https://github.com/kubernetes/dashboard/blob/master/docs/common/arguments.md
+    args:
+      - --token-ttl=43200
+      - --enable-skip-login
+web:
+  image:
+    repository: m.daocloud.io/docker.io/kubernetesui/dashboard-web
+    tag: v1.0.0
+
+
+## Metrics Scraper
+## Container to scrape, store, and retrieve a window of time from the Metrics Server.
+## refs: https://github.com/kubernetes-sigs/dashboard-metrics-scraper
+metricsScraper:
+  ## Whether to enable dashboard-metrics-scraper
+  enabled: true
+  image:
+    repository: m.daocloud.io/docker.io/kubernetesui/metrics-scraper
+    tag: v1.0.9
+
+## Extra configurations:
+## - manifests
+## - predefined roles
+## - prometheus
+## - etc...
+extras:
+  # Start in ReadOnly mode.
+  # Specifies whether cluster-wide RBAC resources (ClusterRole, ClusterRolebinding) with read only permissions to all resources listed inside the cluster should be created
+  # Only dashboard-related Secrets and ConfigMaps will still be available for writing.
+  #
+  # The basic idea of the clusterReadOnlyRole
+  # is not to hide all the secrets and sensitive data but more
+  # to avoid accidental changes in the cluster outside the standard CI/CD.
+  #
+  # It is NOT RECOMMENDED to use this version in production.
+  # Instead, you should review the role and remove all potentially sensitive parts such as
+  # access to persistentvolumes, pods/log etc.
+  clusterReadOnlyRole: true
+  # It is possible to add additional rules if read only role is enabled.
+  # This can be useful, for example, to show CRD resources.
+  clusterReadOnlyRoleAdditionalRules:
+    - apiGroups: [ "apiextensions.k8s.io" ]
+      resources: [ "customresourcedefinitions" ]
+      verbs: [ "get", "list", "watch" ]
+    - apiGroups: [ "networking.k8s.io" ]
+      resources: [ "ingressclasses" ]
+      verbs: [ "get", "list", "watch" ]
+    - apiGroups: [ "" ]
+      resources: [ "secrets" ]
+      verbs: [ "get", "list", "watch" ]
+  serviceMonitor:
+    # Whether to create a Prometheus Operator service monitor.
+    enabled: false

@@ -47,3 +47,6 @@ cert:
     country: "CN"
     province: "Zhejiang"
     locality: "Hangzhou"
+
+dashboard:
+  host: dashboard.k8s.{{ cluster.apex_domain }}
