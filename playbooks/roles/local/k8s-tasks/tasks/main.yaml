@@ -1,0 +1,6 @@
+---
+- name: Download ca cert from cluster secret
+  tags:
+    - ca-download
+  ansible.builtin.shell: |
+    kubectl -n cert-manager get secrets {{ cert.ca_secret_name }} -o jsonpath="{.data.ca\.crt}" | base64 --decode > {{ cert.ca_file }}

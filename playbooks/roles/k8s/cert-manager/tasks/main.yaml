@@ -1,0 +1,40 @@
+---
+- name: Install the cert-manager CustomResourceDefinition resources
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.command: kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
+  changed_when: false
+
+- name: Create cert-manager
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: cert-manager
+    release_namespace: cert-manager
+    create_namespace: yes
+    # https://artifacthub.io/packages/helm/cert-manager/cert-manager
+    chart_ref: helm/charts/cert-manager-v1.13.2.tgz
+    values: "{{ lookup('ansible.builtin.file', 'values.yaml') | from_yaml }}"
+    state: present
+    wait: true
+
+- name: Export ca cert file
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.shell: kubectl -n cert-manager get secrets {{ cert.ca_secret_name }} -o jsonpath="{.data.ca\.crt}" | base64 --decode
+  register: ca_cert_file
+  changed_when: false
+
+- name: Set fact of ca_cert_file_exists
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.set_fact:
+    ca_cert_file_exists: '{{ ca_cert_file.stdout != "" }}'
+
+- name: Create cluster issuer
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    apply: yes
+    template : cluster-issuer.yaml.j2

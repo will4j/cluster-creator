@@ -33,3 +33,17 @@ pangu:
 
 nfs:
   share_dir: /data/nfs_share
+
+cert:
+  ca_file: example-ca.crt
+  ca_secret_name: "{{ cluster.name }}-ca-secret"
+  ca_duration: 87600h
+  ca_renew_before: 336h
+  private_key:
+    algorithm: ECDSA
+    size: 256
+  cluster_issuer_name: "{{ cluster.name }}-cluster-issuer"
+  subject:
+    country: "CN"
+    province: "Zhejiang"
+    locality: "Hangzhou"

@@ -4,5 +4,4 @@
     - role: local/ssh-keys
       tags:
         - ssh-keys
-
-      
+    - role: local/k8s-tasks

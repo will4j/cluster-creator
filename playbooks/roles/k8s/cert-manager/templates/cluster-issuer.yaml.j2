@@ -1,0 +1,55 @@
+## define selfsigned cert issuer
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ cluster.name }}-selfsigned-issuer"
+  namespace: cert-manager
+spec:
+  selfSigned: { }
+{% if not ca_cert_file_exists %}
+---
+## config selfsigned ca certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ cluster.name }}-ca-cert"
+  namespace: cert-manager
+# https://cert-manager.io/docs/reference/api-docs/#cert-manager.io/v1.Certificate
+spec:
+  isCA: true
+  commonName: "{{ cluster.desc_name }} Selfsigned CA"
+  secretName: "{{ cert.ca_secret_name }}"
+  duration: {{ cert.ca_duration }}
+  renewBefore: {{ cert.ca_renew_before }}
+  subject:
+    countries:
+      - "{{ cert.subject.country }}"
+    provinces:
+      - "{{ cert.subject.province }}"
+    localities:
+      - "{{ cert.subject.locality }}"
+    organizations:
+      - "{{ cluster.desc_name }} CA"
+    organizationalUnits:
+      - "CA"
+  dnsNames:
+    - "www.{{ cluster.apex_domain }}"
+  emailAddresses:
+    - "{{ cluster.admin_email }}"
+  privateKey:
+    algorithm: {{ cert.private_key.algorithm }}
+    size: {{ cert.private_key.size }}
+  issuerRef:
+    name: "{{ cluster.name }}-selfsigned-issuer"
+    kind: Issuer
+    group: cert-manager.io
+{% endif %}
+---
+## actual cluster issuer for use
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: "{{ cert.cluster_issuer_name }}"
+spec:
+  ca:
+    secretName: "{{ cert.ca_secret_name }}"
