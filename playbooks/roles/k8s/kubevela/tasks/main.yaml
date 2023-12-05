@@ -1,0 +1,79 @@
+---
+- name: Installing the vela-core chart
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: vela-core
+    release_namespace: vela-system
+    create_namespace: true
+    # https://artifacthub.io/packages/helm/kubevela/vela-core
+    chart_ref: helm/charts/vela-core-1.9.7.tgz
+    values: "{{ lookup('ansible.builtin.file', 'vela-core-values.yaml') | from_yaml }}"
+    state: present
+    wait: true
+
+- name: Check if KubeVela Addon velaux enabled
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.shell: vela addon status velaux | head -n1 | grep enabled
+  register: velaux_enabled
+  ignore_errors: true
+  changed_when: false
+
+- name: Enable KubeVela Addon velaux
+  when: velaux_enabled.stdout == ""
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.command: vela addon enable velaux domain={{ kubevela.host }} dbType=mongodb dbURL=mongodb://{{ mongodb.velaux_username }}:{{ mongodb.velaux_password }}@{{ mongodb_url }}/{{ mongodb.velaux_database }}
+
+  # visit velaux localhost
+  # $ vela port-forward -n vela-system addon-velaux 9082:80
+  # choose local | velaux | velaux
+
+- name: Create flux-system namespace
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    name: flux-system
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create helm ca file secret
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "helm-cluster-ca-file"
+        namespace: flux-system
+      type: Opaque
+      data:
+        caFile: "{{ lookup('ansible.builtin.file', '{{ cert.ca_file }}') | b64encode }}"
+
+- name: Check if KubeVela Addon fluxcd enabled
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.shell: vela addon status fluxcd | head -n1 | grep enabled
+  register: fluxcd_enabled
+  ignore_errors: true
+  changed_when: false
+
+- name: Enable KubeVela Addon fluxcd
+  when: fluxcd_enabled.stdout == ""
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.command: vela addon enable kubevela/addons/fluxcd
+
+- name: Set Docker Image Registry Config
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.command: vela config create docker-hub --description=https://hub.docker.com -t image-registry registry=index.docker.io useHTTP=true auth.username="{{ docker.username }}" auth.password="{{ docker.password }}" auth.email="{{ docker.email }}"
+
+- name: Set Harbor Image Registry Config
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.command: vela config create harbor-repo --description=https://{{ harbor.host }} -t image-registry registry="{{ harbor.host }}" insecure=true auth.username="{{ harbor.robot_name }}" auth.password="{{ harbor.robot_password }}"

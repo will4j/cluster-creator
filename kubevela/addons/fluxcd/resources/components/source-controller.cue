@@ -50,6 +50,20 @@ sourceController: {
 					mountPath: "/data"
 				},
 			]
+			secret: [
+				{
+					name: "helm-cluster-ca-file"
+					mountPath: "/etc/ssl/certs/helm-cluster-ca.crt"
+					secretName: "helm-cluster-ca-file"
+					subPath: "helm-cluster-ca.crt"
+					items: [
+						{
+							key: "caFile"
+							path: "helm-cluster-ca.crt"
+						}
+					]
+				}
+			]
 		}
 		ports: [
 			{

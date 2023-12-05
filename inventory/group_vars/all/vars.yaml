@@ -62,6 +62,8 @@ harbor:
   storage_class: "{{ storage_class }}"
   # The secret key used for encryption. Must be a string of 16 chars
   secret_key: "Valar--Morghulis"
+  robot_name: robot${{ cluster.name }}-rw-robot
+  robot_password: "{{ vault_harbor_robot_password }}"
 
 mongodb:
   url: "mongodb.storage.svc.cluster.local:27017"
@@ -71,3 +73,11 @@ mongodb:
   velaux_database: kubevela
   velaux_username: velaux
   velaux_password: "{{ vault_mongodb_velaux_password }}"
+
+kubevela:
+  host: "kubevela.{{ cluster.apex_domain }}"
+
+docker:
+  username: "{{ vault_docker_username }}"
+  password: "{{ vault_docker_password }}"
+  email: "{{ vault_docker_email }}"

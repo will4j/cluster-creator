@@ -1,0 +1,28 @@
+# https://github.com/kubevela/kubevela/blob/master/charts/vela-core/values.yaml
+## @param imageRegistry Image registry
+imageRegistry: "m.daocloud.io/"
+image:
+  repository: docker.io/oamdev/vela-core
+  tag: v1.9.7
+
+multicluster:
+  clusterGateway:
+    image:
+      repository: docker.io/oamdev/cluster-gateway
+      tag: v1.9.0-alpha.2
+
+## @skip admissionWebhooks
+admissionWebhooks:
+  patch:
+    image:
+      repository: docker.io/oamdev/kube-webhook-certgen
+      tag: v2.4.1
+
+## @param affinity Affinity
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
