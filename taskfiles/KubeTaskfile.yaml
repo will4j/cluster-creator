@@ -9,7 +9,7 @@ tasks:
       TAGS: '{{default "all" .TAGS}}'
     cmds:
       - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password
-        --tags "{{.TAGS}}" {{.CLI_ARGS}} kube-cluster.yaml
+        --tags "{{.TAGS}}" {{.CLI_ARGS}} playbooks/kube-cluster.yaml
 
   # 1 prepare environment
   1:

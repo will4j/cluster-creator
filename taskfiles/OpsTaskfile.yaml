@@ -12,26 +12,31 @@ tasks:
   distribute-auth-key:
     desc: distribute auth ssh key to cluster hosts
     cmds:
-      - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password playbooks/distribute-ssh-key.yaml
+      - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password 
+        playbooks/distribute-ssh-key.yaml
 
   generate-deploy-key:
     desc: generate deploy ssh key pair
     cmds:
-      - ansible-playbook -i inventory/local-hosts.yaml --tags "deploy-key" {{.CLI_ARGS}} playbooks/local-ops.yaml
+      - ansible-playbook -i inventory/local-hosts.yaml --tags "deploy-key" {{.CLI_ARGS}} 
+        playbooks/local-ops.yaml
 
   reboot-all-hosts:
     desc: Reboot all hosts
     cmds:
       - echo "Caution !!! This will Reboot all hosts, make sure you know what you are doing"
-      - ansible-playbook -i inventory/cluster-hosts.yaml --ask-vault-pass --tags "reboot" playbooks/kube-cluster.yaml
+      - ansible-playbook -i inventory/cluster-hosts.yaml --ask-vault-pass --tags "reboot" 
+        playbooks/kube-cluster.yaml
 
   admin-local:
     desc: download cluster admin config to localhost
     cmds:
-      - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password --tags "admin-local" playbooks/kube-cluster.yaml
+      - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password 
+        --tags "admin-local" playbooks/kube-cluster.yaml
       - echo "execute export KUBECONFIG=\"/home/xxxx/.kube/xxxx-config\" to use config"
 
   cert-ca-download:
     desc: download ca cert from cluster secret
     cmds:
-      - ansible-playbook -i inventory/local-hosts.yaml --tags "ca-download" {{.CLI_ARGS}} playbooks/local-ops.yaml
+      - ansible-playbook -i inventory/local-hosts.yaml --tags "ca-download" {{.CLI_ARGS}} 
+        playbooks/local-ops.yaml
