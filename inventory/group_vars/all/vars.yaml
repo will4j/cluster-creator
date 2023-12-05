@@ -26,3 +26,7 @@ cluster:
 k8s:
   version: "1.28.4-1.1"
   control_plane_endpoint: cluster-endpoint.k8s.{{ cluster.apex_domain }}
+
+pangu:
+  host: example-master-1
+  ip: 192.168.100.1

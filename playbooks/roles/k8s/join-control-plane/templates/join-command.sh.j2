@@ -1,0 +1,2 @@
+# https://kubernetes.io/zh-cn/docs/reference/setup-tools/kubeadm/kubeadm-join/
+{{ control_plane_join_command.stdout_lines[0] }} --apiserver-advertise-address {{ ansible_host }}

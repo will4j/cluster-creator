@@ -1,0 +1,32 @@
+---
+- name: Check if kubelet.conf already inited
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_conf
+
+- name: Join control plane to cluster
+  when: not kubelet_conf.stat.exists
+  block:
+    - name: Create a new certificate key
+      run_once: true
+      delegate_to: "{{ pangu.host }}"
+      ansible.builtin.command: kubeadm init phase upload-certs --upload-certs
+      register: certificate_key
+
+    - name: Generate control plane join command
+      run_once: true
+      delegate_to: "{{ pangu.host }}"
+      # https://kubernetes.io/zh-cn/docs/reference/setup-tools/kubeadm/kubeadm-token/
+      ansible.builtin.command: kubeadm token create --ttl 10m --print-join-command --certificate-key={{ certificate_key.stdout_lines[-1] }}
+      register: control_plane_join_command
+
+    - name: Copy the join command to server location
+      # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html#parameters
+      ansible.builtin.template:
+        src: join-command.sh.j2
+        dest: /tmp/join-command.sh
+        mode: 0777
+
+    - name: Join the node to cluster
+      # https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#join-nodes
+      ansible.builtin.command: sh /tmp/join-command.sh

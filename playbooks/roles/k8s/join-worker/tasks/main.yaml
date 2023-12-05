@@ -1,0 +1,43 @@
+---
+- name: Check if kubelet.conf already inited
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_conf
+
+- name: Join worker node to cluster
+  when: not kubelet_conf.stat.exists
+  block:
+    - name: Generate worker join command
+      run_once: true
+      delegate_to: "{{ pangu.host }}"
+      ansible.builtin.command: kubeadm token create --print-join-command
+      register: worker_join_command
+
+    - name: Copy worker join command to local file
+      become: false
+      run_once: true
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ worker_join_command.stdout_lines[0] }}"
+        dest: "/tmp/worker_join_command"
+
+    - name: Copy the join command to server location
+      ansible.builtin.copy:
+        src: /tmp/worker_join_command
+        dest: /tmp/join-command.sh
+        mode: 0777
+
+    - name: Join the node to cluster
+      ansible.builtin.command: sh /tmp/join-command.sh
+
+- name: Label node role as worker
+  become: false
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    kind: Node
+    name: "{{ ansible_nodename }}"
+    definition:
+      metadata:
+        labels:
+          node-role.kubernetes.io/worker: worker
