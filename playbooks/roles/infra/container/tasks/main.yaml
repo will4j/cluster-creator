@@ -1,0 +1,71 @@
+---
+# https://github.com/containerd/containerd/blob/main/docs/getting-started.md
+# https://docs.docker.com/engine/install/ubuntu/
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html#ansible-collections-ansible-builtin-apt-module
+- name: Uninstall docker versions
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - docker-doc
+      - docker-compose
+      - docker-compose-v2
+      - podman-docker
+      - containerd
+      - runc
+    state: absent
+
+- name: Install pre apt packages for containerd.io
+  ansible.builtin.apt:
+    update_cache: yes
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module.html#ansible-collections-ansible-builtin-shell-module
+- name: Add Docker's official GPG key
+  ansible.builtin.shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo \
+      "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+      "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+      tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+- name: Install containerd.io
+  ansible.builtin.apt:
+    update_cache: yes
+    name:
+      - containerd.io
+    state: present
+
+- name: Check if SystemdCgroup = true
+  ansible.builtin.command: grep SystemdCgroup /etc/containerd/config.toml
+  register: systemd_cgroup
+  failed_when: systemd_cgroup.rc == 2
+  changed_when: false
+
+- name: config containerd
+  when: systemd_cgroup.stdout.find("true") == -1
+  block:
+    - name: Load default containerd config.toml
+      ansible.builtin.shell: |
+        mkdir -p /etc/containerd
+        containerd config default | tee /etc/containerd/config.toml
+
+    - name: Configuring the systemd cgroup driver
+      ansible.builtin.replace:
+        path: /etc/containerd/config.toml
+        regexp: '(\s+)SystemdCgroup = false(\s+.*)?$'
+        replace: '\1SystemdCgroup = true\2'
+      notify: Restart containerd
+
+    - name: Update sandbox image with aliyuncs registry
+      ansible.builtin.replace:
+        path: /etc/containerd/config.toml
+        regexp: '(\s+)sandbox_image = "registry\.k8s\.io/pause:3\.6"(\s+.*)?$'
+        replace: '\1sandbox_image = "registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.9"\2'
+      notify: Restart containerd
+
+    - name: Restart containerd immediately if necessary
+      ansible.builtin.meta: flush_handlers
