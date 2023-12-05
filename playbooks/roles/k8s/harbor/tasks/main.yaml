@@ -1,0 +1,78 @@
+---
+- name: Create harbor namespace
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    name: harbor
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Check if certificates harbor-tls-cert exists
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.shell: kubectl -n harbor get certificates.cert-manager.io harbor-tls-cert
+  register: harbor_tls_cert
+  ignore_errors: true
+  changed_when: false
+
+- name: Create harbor-tls-cert
+  when: harbor_tls_cert.stdout == ""
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    apply: yes
+    definition: "{{ lookup('ansible.builtin.template', 'harbor-tls-cert.yaml.j2') | from_yaml }}"
+
+- name: Install harbor helm chart
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: harbor
+    release_namespace: harbor
+    create_namespace: true
+    # https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
+    chart_ref: helm/charts/harbor-1.13.1.tgz
+    values: "{{ lookup('ansible.builtin.template', 'values.yaml.j2') | from_yaml }}"
+    state: present
+    wait: true
+
+- name: add harbor address to coredns config map
+  become: false
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: coredns
+        namespace: kube-system
+      data:
+        Corefile: |
+          .:53 {
+              errors
+              health {
+                 lameduck 5s
+              }
+              ready
+              kubernetes cluster.local in-addr.arpa ip6.arpa {
+                 pods insecure
+                 fallthrough in-addr.arpa ip6.arpa
+                 ttl 30
+              }
+              prometheus :9153
+              forward . /etc/resolv.conf {
+                 max_concurrent 1000
+              }
+              cache 30
+              loop
+              reload
+              loadbalance
+              hosts {{ cluster.apex_domain }} {
+                {{ pangu.ip }} {{ harbor.host }}
+                fallthrough
+              }
+          }

@@ -1,0 +1,64 @@
+# https://github.com/goharbor/harbor-helm/blob/v1.13.1/values.yaml
+expose:
+  tls:
+    enable: true
+    certSource: secret
+    secret:
+      secretName: harbor-tls-secret
+  ingress:
+    hosts:
+      core: {{ harbor.host }}
+    controller: default
+    className: nginx
+externalURL: https://{{ harbor.host }}
+internalTLS:
+  enabled: true
+  certSource: auto
+persistence:
+  enabled: true
+  resourcePolicy: "keep"
+  persistentVolumeClaim:
+    registry:
+      storageClass: {{ harbor.storage_class }}
+      size: 100Gi
+    jobservice:
+      jobLog:
+        storageClass: {{ harbor.storage_class }}
+        size: 10Gi
+    database:
+      storageClass: {{ harbor.storage_class }}
+      size: 10Gi
+    redis:
+      storageClass: {{ harbor.storage_class }}
+      size: 10Gi
+    trivy:
+      storageClass: {{ harbor.storage_class }}
+      size: 10Gi
+harborAdminPassword: {{ harbor.admin_password }}
+# The secret key used for encryption. Must be a string of 16 chars.
+secretKey: {{ harbor.secret_key }}
+
+database:
+  # if external database is used, set "type" to "external"
+  # and fill the connection information in "external" section
+  type: internal
+  internal:
+    password: {{ harbor.db_password }}
+redis:
+  # if external Redis is used, set "type" to "external"
+  # and fill the connection information in "external" section
+  type: internal
+
+core:
+  replicas: 2
+registry:
+  replicas: 2
+# cache layer configurations
+# if this feature enabled, harbor will cache the resource
+# `project/project_metadata/repository/artifact/manifest` in the redis
+# which help to improve the performance of high concurrent pulling manifest.
+cache:
+  # default is not enabled.
+  enabled: true
+  # default keep cache for one day.
+  expireHours: 24

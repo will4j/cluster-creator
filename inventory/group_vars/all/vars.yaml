@@ -39,6 +39,8 @@ cert:
   ca_secret_name: "{{ cluster.name }}-ca-secret"
   ca_duration: 87600h
   ca_renew_before: 336h
+  duration: 8760h
+  renew_before: 336h
   private_key:
     algorithm: ECDSA
     size: 256
@@ -50,3 +52,13 @@ cert:
 
 dashboard:
   host: dashboard.k8s.{{ cluster.apex_domain }}
+
+storage_class: nfs-client-example-data-1
+
+harbor:
+  host: "harbor.{{ cluster.apex_domain }}"
+  admin_password: "{{ vault_harbor_admin_password }}"
+  db_password: "{{ vault_harbor_db_password }}"
+  storage_class: "{{ storage_class }}"
+  # The secret key used for encryption. Must be a string of 16 chars
+  secret_key: "Valar--Morghulis"
