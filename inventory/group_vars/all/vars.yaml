@@ -14,3 +14,11 @@ host_password:
   example-worker-1: "{{ vault_node_password }}"
   example-worker-2: "{{ vault_node_password }}"
   example-data-1: "{{ vault_node_password }}"
+
+multipass_node: false
+
+cluster:
+  name: example
+  desc_name: Example
+  apex_domain: example.com
+  admin_email: exaops@example.com

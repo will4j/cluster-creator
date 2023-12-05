@@ -1,0 +1,13 @@
+---
+- name: Update cloud init /etc/hosts template
+  when: multipass_node
+  ansible.builtin.blockinfile:
+    path: /etc/cloud/templates/hosts.debian.tmpl
+    marker: "# {mark} ANSIBLE MANAGED HOSTS"
+    block: "{{ lookup('ansible.builtin.template', 'etc_hosts.j2') }}"
+
+- name: Update /etc/hosts
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} ANSIBLE MANAGED HOSTS"
+    block: "{{ lookup('ansible.builtin.template', 'etc_hosts.j2') }}"

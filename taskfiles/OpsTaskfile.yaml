@@ -7,7 +7,7 @@ tasks:
   generate-auth-key:
     desc: generate remote host auth ssh key pair
     cmds:
-      - ansible-playbook -i inventory/local-hosts.yaml --tags "auth-key" playbooks/local-ops.yaml
+      - ansible-playbook -i inventory/local-hosts.yaml --tags "auth-key" {{.CLI_ARGS}} playbooks/local-ops.yaml
 
   distribute-auth-key:
     desc: distribute auth ssh key to cluster hosts
@@ -17,7 +17,7 @@ tasks:
   generate-deploy-key:
     desc: generate deploy ssh key pair
     cmds:
-      - ansible-playbook -i inventory/local-hosts.yaml --tags "deploy-key" playbooks/local-ops.yaml
+      - ansible-playbook -i inventory/local-hosts.yaml --tags "deploy-key" {{.CLI_ARGS}} playbooks/local-ops.yaml
 
   reboot-all-hosts:
     desc: Reboot all hosts
