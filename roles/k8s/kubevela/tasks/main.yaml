@@ -52,7 +52,7 @@
         namespace: flux-system
       type: Opaque
       data:
-        caFile: "{{ lookup('ansible.builtin.file', '{{ cert.ca_file }}') | b64encode }}"
+        caFile: "{{ lookup('ansible.builtin.file', '../{{ cert.ca_file }}') | b64encode }}"
 
 - name: Check if KubeVela Addon fluxcd enabled
   run_once: true
@@ -66,7 +66,7 @@
   when: fluxcd_enabled.stdout == ""
   run_once: true
   delegate_to: localhost
-  ansible.builtin.command: vela addon enable kubevela/addons/fluxcd
+  ansible.builtin.command: vela addon enable ../kubevela/addons/fluxcd
 
 - name: Set Docker Image Registry Config
   run_once: true
