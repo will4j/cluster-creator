@@ -1,0 +1,41 @@
+# https://github.com/bitnami/charts/blob/main/bitnami/mongodb/values.yaml
+global:
+  storageClass: {{ mongodb.storage_class }}
+
+## Enable persistence using Persistent Volume Claims
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  ## @param persistence.enabled Enable MongoDB(&reg;) data persistence using PVC
+  ##
+  enabled: true
+  ## @param persistence.size PVC Storage Request for MongoDB(&reg;) data volume
+  ##
+  size: {{ mongodb.storage_size }}
+
+auth:
+  ## @param auth.rootPassword MongoDB(&reg;) root password
+  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mongodb#setting-the-root-user-and-password-on-first-run
+  ##
+  rootPassword: {{ mongodb.root_password }}
+  ## MongoDB(&reg;) custom users and databases
+  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mongodb#creating-a-user-and-database-on-first-run
+  ## @param auth.usernames List of custom users to be created during the initialization
+  ## @param auth.passwords List of passwords for the custom users set at `auth.usernames`
+  ## @param auth.databases List of custom databases to be created during the initialization
+  ##
+  usernames: [ "{{ mongodb.velaux_username }}" ]
+  passwords: [ "{{ mongodb.velaux_password }}" ]
+  databases: [ "{{ mongodb.velaux_database }}" ]
+
+## @param affinity MongoDB(&reg;) Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## Note: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+##
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists

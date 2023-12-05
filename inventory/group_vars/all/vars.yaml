@@ -62,3 +62,12 @@ harbor:
   storage_class: "{{ storage_class }}"
   # The secret key used for encryption. Must be a string of 16 chars
   secret_key: "Valar--Morghulis"
+
+mongodb:
+  url: "mongodb.storage.svc.cluster.local:27017"
+  root_password: "{{ vault_mongodb_root_password }}"
+  storage_class: "{{ storage_class }}"
+  storage_size: 20Gi
+  velaux_database: kubevela
+  velaux_username: velaux
+  velaux_password: "{{ vault_mongodb_velaux_password }}"

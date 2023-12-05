@@ -1,0 +1,13 @@
+---
+- name: Installing the mongodb chart
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: mongodb
+    release_namespace: storage
+    create_namespace: true
+    # # https://artifacthub.io/packages/helm/bitnami/mongodb
+    chart_ref: helm/charts/mongodb-14.3.2.tgz
+    values: "{{ lookup('ansible.builtin.template', 'values.yaml.j2') | from_yaml }}"
+    state: present
+    wait: true
