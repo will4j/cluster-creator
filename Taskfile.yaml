@@ -1,0 +1,26 @@
+# https://taskfile.dev/installation/
+# https://taskfile.dev/usage/
+# https://taskfile.dev/styleguide/
+version: '3'
+
+includes:
+  ops:
+    taskfile: taskfiles/OpsTaskfile.yaml
+  kube:
+    taskfile: taskfiles/KubeTaskfile.yaml
+
+tasks:
+  encrypt-vault:
+    desc: encrypt vault password
+    cmds:
+      - ansible-vault encrypt inventory/group_vars/all/vault.yaml
+
+  decrypt-vault:
+    desc: decrypt vault password
+    cmds:
+      - ansible-vault decrypt inventory/group_vars/all/vault.yaml
+
+  ping:
+    desc: ping test all hosts
+    cmds:
+      - ansible -k all -i inventory/cluster-hosts.yaml --vault-password-file .vault_password -m ping
