@@ -1,0 +1,37 @@
+# https://ubuntu.com/server/docs/service-nfs
+---
+- name: Install nfs-kernel-server
+  ansible.builtin.apt:
+    name:
+      - nfs-kernel-server
+    state: present
+
+- name: Start nfs-kernel-server.service
+  ansible.builtin.systemd:
+    name: nfs-kernel-server.service
+    state: started
+
+- name: Create nfs share directory
+  ansible.builtin.file:
+    path: "{{ nfs.share_dir }}"
+    state: directory
+
+- name: Check if nfs share directory exported
+  ansible.builtin.command: grep ^{{ nfs.share_dir }} /etc/exports
+  register: nfs_share
+  failed_when: nfs_share.rc == 2
+  changed_when: false
+
+- name: Export nfs share directory
+  when: nfs_share.stdout == ""
+  block:
+    - name: Export nfs share directory
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: "{{ nfs.share_dir }}	*(rw,async,no_subtree_check,no_root_squash)"
+        state: present
+
+    - name: Restart nfs-kernel-server.service
+      ansible.builtin.systemd:
+        name: nfs-kernel-server.service
+        state: restarted

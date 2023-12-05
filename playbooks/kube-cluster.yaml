@@ -60,12 +60,12 @@
     - nfs-client
   become: yes
   roles:
-    - role: infra/nfs
+    - role: infra/nfs-client
 
 - hosts: nfs_server
   become: yes
   roles:
-    - role: infra/nfs
+    - role: infra/nfs-server
       tags:
         - nfs-server
     - role: k8s/nfs-pvc

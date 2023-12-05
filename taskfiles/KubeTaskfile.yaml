@@ -83,39 +83,39 @@ tasks:
       - task: 3.8
 
   3.1:
+    desc: nfs pvc as kubernetes cluster storage
+    cmds:
+      - task: kube-cluster
+        vars:
+          TAGS: nfs-client,nfs-server,nfs-pvc
+
+  3.2:
     desc: create metrics-server
     cmds:
       - task: kube-cluster
         vars:
           TAGS: metrics-server
 
-  3.2:
+  3.3:
     desc: create cert-manager
     cmds:
       - task: kube-cluster
         vars:
           TAGS: cert-manager
 
-  3.3:
+  3.4:
     desc: create ingress-nginx
     cmds:
       - task: kube-cluster
         vars:
           TAGS: ingress-nginx
 
-  3.4:
+  3.5:
     desc: create kubernetes dashboard
     cmds:
       - task: kube-cluster
         vars:
           TAGS: dashboard
-
-  3.5:
-    desc: nfs pvc as kubernetes cluster storage
-    cmds:
-      - task: kube-cluster
-        vars:
-          TAGS: nfs-client,nfs-server,nfs-pvc
 
   3.6:
     desc: install harbor helm chart

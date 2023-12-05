@@ -30,3 +30,6 @@ k8s:
 pangu:
   host: example-master-1
   ip: 192.168.100.1
+
+nfs:
+  share_dir: /data/nfs_share
