@@ -1,0 +1,24 @@
+# https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/blob/master/charts/nfs-subdir-external-provisioner/values.yaml
+image:
+  repository: registry.cn-hangzhou.aliyuncs.com/weiyigeek/nfs-subdir-external-provisioner
+
+nfs:
+  server: {{ ansible_nodename }}
+  path: {{ nfs.share_dir }}
+  volumeName: nfs-provisioner-{{ ansible_hostname }}
+  # Reclaim policy for the main nfs volume
+  reclaimPolicy: Retain
+
+# For creating the StorageClass automatically:
+storageClass:
+  name: nfs-client-{{ ansible_hostname }}
+  provisionerName: nfs-provisioner-{{ ansible_hostname }}
+
+# Schedule to control plane
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
