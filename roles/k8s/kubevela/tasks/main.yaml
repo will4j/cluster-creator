@@ -24,7 +24,7 @@
   when: velaux_enabled.stdout == ""
   run_once: true
   delegate_to: localhost
-  ansible.builtin.command: vela addon enable velaux domain={{ kubevela.host }} dbType=mongodb dbURL=mongodb://{{ mongodb.velaux_username }}:{{ mongodb.velaux_password }}@{{ mongodb_url }}/{{ mongodb.velaux_database }}
+  ansible.builtin.command: vela addon enable velaux domain={{ kubevela.host }} dbType=mongodb dbURL=mongodb://{{ mongodb.velaux_username }}:{{ mongodb.velaux_password }}@{{ mongodb.url }}/{{ mongodb.velaux_database }}
 
   # visit velaux localhost
   # $ vela port-forward -n vela-system addon-velaux 9082:80
