@@ -1,0 +1,13 @@
+---
+- name: distribute ssh auth key to all remote hosts
+  hosts: all
+
+  vars:
+    ansible_ssh_pass: "{{ host_password[inventory_hostname] }}"
+
+  tasks:
+    - name: distribute authorized ssh key
+      ansible.posix.authorized_key:
+        user: "{{ ansible_user }}"
+        state: present
+        key: "{{ lookup('ansible.builtin.file', '{{ inventory_dir }}/ssh-keys/{{ ssh_key.auth_key }}.pub') }}"

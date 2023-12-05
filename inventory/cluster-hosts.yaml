@@ -1,0 +1,32 @@
+---
+all:
+  vars:
+    ansible_ssh_private_key_file: "{{ inventory_dir }}/ssh-keys/{{ ssh_key.auth_key }}"
+  children:
+    primary_control_planes:
+      hosts:
+        example-master-1:
+
+    secondary_control_planes:
+      hosts:
+        example-master-2:
+        example-master-3:
+
+    control_planes:
+      children:
+        primary_control_planes:
+        secondary_control_planes:
+
+    workers:
+      hosts:
+        example-worker-1:
+        example-worker-2:
+
+    kube_cluster:
+      children:
+        control_planes:
+        workers:
+
+    nfs_server:
+      hosts:
+        example-data-1:

@@ -4,12 +4,23 @@
 version: '3'
 
 tasks:
-  generate-ssh-key:
-    desc: generate remote host ssh key pair
+  generate-auth-key:
+    desc: generate remote host auth ssh key pair
     cmds:
       - ansible-playbook -i inventory/local-hosts.yaml --tags "auth-key" playbooks/local-ops.yaml
+
+  distribute-auth-key:
+    desc: distribute auth ssh key to cluster hosts
+    cmds:
+      - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password playbooks/distribute-ssh-key.yaml
 
   generate-deploy-key:
     desc: generate deploy ssh key pair
     cmds:
       - ansible-playbook -i inventory/local-hosts.yaml --tags "deploy-key" playbooks/local-ops.yaml
+
+  reboot-all-hosts:
+    desc: Reboot all hosts
+    cmds:
+      - echo "Caution !!! This will Reboot all hosts, make sure you know what you are doing"
+      - ansible-playbook -i inventory/cluster-hosts.yaml --ask-vault-pass --tags "reboot" playbooks/kube-cluster.yaml

@@ -1,0 +1,98 @@
+---
+- hosts: all
+  tags:
+    - hosts
+  become: yes
+  roles:
+    - role: infra/hosts
+
+- hosts: all
+  tags:
+    - container
+  become: yes
+  roles:
+    - role: infra/container
+
+- hosts: all
+  tags:
+    - reboot
+  become: yes
+  roles:
+    - role: infra/reboot
+
+- hosts: cloud_cluster
+  tags:
+    - init-node
+  become: yes
+  roles:
+    - role: k8s/init-node
+
+- hosts: first_control_planes
+  tags:
+    - init-cluster
+  become: yes
+  roles:
+    - role: k8s/init-cluster
+
+- hosts: rest_control_planes
+  tags:
+    - join
+  become: yes
+  roles:
+    - role: k8s/join-control-plane
+
+- hosts: workers
+  tags:
+    - join
+  become: yes
+  roles:
+    - role: k8s/join-worker
+
+- hosts: control_planes
+  tags:
+    - post-config
+  become: yes
+  roles:
+    - role: k8s/post-config
+
+- hosts: cloud_cluster
+  tags:
+    - nfs-client
+  become: yes
+  roles:
+    - role: infra/nfs
+
+- hosts: nfs_server
+  become: yes
+  roles:
+    - role: infra/nfs
+      tags:
+        - nfs-server
+    - role: k8s/nfs-pvc
+      tags:
+        - nfs-pvc
+
+- hosts: all
+  become: false
+  roles:
+    - role: k8s/metrics-server
+      tags:
+        - metrics-server
+    - role: k8s/cert-manager
+      tags:
+        - cert-manager
+    - role: k8s/ingress-nginx
+      tags:
+        - ingress-nginx
+    - role: k8s/dashboard
+      tags:
+        - dashboard
+    - role: k8s/harbor
+      tags:
+        - harbor
+    - role: k8s/mongodb
+      tags:
+        - mongodb
+    - role: k8s/kubevela
+      tags:
+        - kubevela

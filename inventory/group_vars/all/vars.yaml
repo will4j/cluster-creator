@@ -1,5 +1,16 @@
 ---
+ansible_user: exaops
+ansible_port: 22
+
 ssh_key:
   comment: "exaops@example.com"
   auth_key: guardian
   deploy_key: deploy
+
+host_password:
+  example-master-1: "{{ vault_node_password }}"
+  example-master-2: "{{ vault_node_password }}"
+  example-master-3: "{{ vault_node_password }}"
+  example-worker-1: "{{ vault_node_password }}"
+  example-worker-2: "{{ vault_node_password }}"
+  example-data-1: "{{ vault_node_password }}"
