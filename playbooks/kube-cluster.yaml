@@ -27,7 +27,7 @@
   roles:
     - role: k8s/init-node
 
-- hosts: first_control_planes
+- hosts: primary_control_planes
   become: yes
   roles:
     - role: k8s/init-cluster
@@ -37,7 +37,7 @@
       tags:
         - admin-local
 
-- hosts: rest_control_planes
+- hosts: secondary_control_planes
   tags:
     - join
   become: yes
