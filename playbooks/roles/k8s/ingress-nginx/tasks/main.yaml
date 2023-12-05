@@ -1,0 +1,13 @@
+---
+- name: Create ingress-nginx ingress controller
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: ingress-nginx
+    release_namespace: network
+    create_namespace: true
+    # https://artifacthub.io/packages/helm/ingress-nginx/ingress-nginx
+    chart_ref: helm/charts/ingress-nginx-4.8.3.tgz
+    values: "{{ lookup('ansible.builtin.file', 'values.yaml') | from_yaml }}"
+    state: present
+    wait: true
