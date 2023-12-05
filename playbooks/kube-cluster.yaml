@@ -20,7 +20,7 @@
   roles:
     - role: infra/reboot
 
-- hosts: cloud_cluster
+- hosts: kube_cluster
   tags:
     - init-node
   become: yes
@@ -58,7 +58,7 @@
   roles:
     - role: k8s/post-config
 
-- hosts: cloud_cluster
+- hosts: kube_cluster
   tags:
     - nfs-client
   become: yes

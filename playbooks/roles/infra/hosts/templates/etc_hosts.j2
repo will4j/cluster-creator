@@ -1,1 +1,13 @@
 # {{ cluster.name }}-kubernetes
+{% for host in groups['control_planes'] %}
+{{ hostvars[host].ansible_host }} {{ host -}}
+{% if loop.first %}
+ {{ k8s.control_plane_endpoint }} {{ dashboard.host }}
+{% elif loop.index == 2 %}
+ {{ harbor.host }} {{ kubevela.host }}
+{% endif %}
+{% endfor %}
+
+{% for host in groups['workers'] %}
+{{ hostvars[host].ansible_host }} {{ host }}
+{% endfor %}
