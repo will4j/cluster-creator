@@ -1,0 +1,5 @@
+---
+ssh_key:
+  comment: "exaops@example.com"
+  auth_key: guardian
+  deploy_key: deploy

@@ -1,0 +1,13 @@
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module.html
+---
+- name: Generate remote host ssh key pair
+  tags:
+    - auth-key
+  ansible.builtin.shell: |
+    ssh-keygen -t ed25519 -C "{{ ssh_key.comment }}" -f {{ inventory_dir }}/ssh-keys/{{ ssh_key.auth_key }}
+
+- name: Generate deploy ssh key pair
+  tags:
+    - deploy-key
+  ansible.builtin.shell: |
+    ssh-keygen -t ed25519 -C "{{ ssh_key.comment }}" -f {{ inventory_dir }}/ssh-keys/{{ ssh_key.deploy_key }}

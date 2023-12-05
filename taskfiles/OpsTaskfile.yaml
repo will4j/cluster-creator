@@ -1,0 +1,15 @@
+# https://taskfile.dev/installation/
+# https://taskfile.dev/usage/
+# https://taskfile.dev/styleguide/
+version: '3'
+
+tasks:
+  generate-ssh-key:
+    desc: generate remote host ssh key pair
+    cmds:
+      - ansible-playbook -i inventory/local-hosts.yaml --tags "auth-key" playbooks/local-ops.yaml
+
+  generate-deploy-key:
+    desc: generate deploy ssh key pair
+    cmds:
+      - ansible-playbook -i inventory/local-hosts.yaml --tags "deploy-key" playbooks/local-ops.yaml

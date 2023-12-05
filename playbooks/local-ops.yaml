@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  roles:
+    - role: local/ssh-keys
+      tags:
+        - ssh-keys
+
+      
