@@ -1,0 +1,27 @@
+---
+- name: Change default api server node port range
+  ansible.builtin.lineinfile:
+    path: /etc/kubernetes/manifests/kube-apiserver.yaml
+    insertafter: ".*service-cluster-ip-range=.*"
+    line: "    - --service-node-port-range=50-32767"
+    state: present
+
+- name: Label control plane node as PreferNoSchedule
+  become: false
+  delegate_to: localhost
+  kubernetes.core.k8s_taint:
+    name: "{{ ansible_nodename }}"
+    state: present
+    taints:
+    - effect: PreferNoSchedule
+      key: node-role.kubernetes.io/control-plane
+
+- name: Remove taint NoSchedule of control plane node
+  become: false
+  delegate_to: localhost
+  kubernetes.core.k8s_taint:
+    name: "{{ ansible_nodename }}"
+    state: absent
+    taints:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/control-plane
