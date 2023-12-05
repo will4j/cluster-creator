@@ -1,5 +1,8 @@
-# https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+# https://github.com/cert-manager/cert-manager/blob/v1.13.2/deploy/charts/cert-manager/values.yaml
 replicaCount: 1
+
+image:
+  repository: quay.m.daocloud.io/jetstack/cert-manager-controller
 
 affinity:
   nodeAffinity:
@@ -10,6 +13,8 @@ affinity:
               operator: Exists
 
 cainjector:
+  image:
+    repository: quay.m.daocloud.io/jetstack/cert-manager-cainjector
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -19,6 +24,8 @@ cainjector:
                 operator: Exists
 
 webhook:
+  image:
+    repository: quay.m.daocloud.io/jetstack/cert-manager-webhook
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -28,6 +35,8 @@ webhook:
                 operator: Exists
 
 startupapicheck:
+  image:
+    repository: quay.m.daocloud.io/jetstack/cert-manager-ctl
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
