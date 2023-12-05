@@ -53,16 +53,23 @@ tasks:
     cmds:
       - task: kube-cluster
         vars:
-          TAGS: init-cluster,admin-local,cni-plugin
+          TAGS: init-cluster,admin-local
 
   2.2:
+    desc: init cni plugin cilium
+    cmds:
+      - task: kube-cluster
+        vars:
+          TAGS: cni-plugin
+
+  2.3:
     desc: join rest node to kubernetes cluster
     cmds:
       - task: kube-cluster
         vars:
           TAGS: join
 
-  2.3:
+  2.4:
     desc: post config for kubernetes cluster
     cmds:
       - task: kube-cluster
