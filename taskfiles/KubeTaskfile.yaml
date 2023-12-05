@@ -53,7 +53,7 @@ tasks:
     cmds:
       - task: kube-cluster
         vars:
-          TAGS: init-cluster
+          TAGS: init-cluster,admin-local,cni-plugin
 
   2.2:
     desc: join rest node to kubernetes cluster

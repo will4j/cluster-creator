@@ -21,17 +21,3 @@
         remote_src: true
         src: /etc/kubernetes/admin.conf
         dest: /home/{{ ansible_ssh_user }}/.kube/config
-
-- name: Installing cluster network cni cilium
-  run_once: true
-  become: false
-  delegate_to: localhost
-  kubernetes.core.helm:
-    release_name: cilium
-    release_namespace: kube-system
-    create_namespace: true
-    # https://artifacthub.io/packages/helm/cilium/cilium
-    chart_ref: helm/charts/cilium-1.14.4.tgz
-    values: "{{ lookup('ansible.builtin.file', 'cilium-values.yaml') | from_yaml }}"
-    state: present
-    wait: true

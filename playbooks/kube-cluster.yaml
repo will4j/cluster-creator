@@ -36,6 +36,9 @@
     - role: k8s/admin-local
       tags:
         - admin-local
+    - role: k8s/cni-plugin
+      tags:
+        - cni-plugin
 
 - hosts: secondary_control_planes
   tags:
