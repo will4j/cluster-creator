@@ -23,4 +23,4 @@ tasks:
   ping:
     desc: ping test all hosts
     cmds:
-      - ansible -k all -i inventory/cluster-hosts.yaml -m ping
+      - ansible -k all -i inventory/cluster-hosts.yaml --vault-password-file .vault_password -m ping
