@@ -1,0 +1,37 @@
+# https://github.com/cilium/cilium/blob/v1.14.4/install/kubernetes/cilium/values.yaml
+image:
+  repository: "quay.m.daocloud.io/cilium/cilium"
+
+certgen:
+  image:
+    repository: "quay.m.daocloud.io/cilium/certgen"
+
+relay:
+  # -- Enable Hubble Relay (requires hubble.enabled=true)
+  enabled: true
+  image:
+    repository: "quay.m.daocloud.io/cilium/hubble-relay"
+
+ui:
+  # -- Whether to enable the Hubble UI.
+  enabled: true
+  backend:
+    # -- Hubble-ui backend image.
+    image:
+      repository: "quay.m.daocloud.io/cilium/hubble-ui-backend"
+  frontend:
+    # -- Hubble-ui frontend image.
+    image:
+      repository: "quay.m.daocloud.io/cilium/hubble-ui"
+
+operator:
+  # -- Enable the cilium-operator component (required).
+  enabled: true
+  # -- cilium-operator image.
+  image:
+    repository: "quay.m.daocloud.io/cilium/operator"
+
+apiserver:
+  # -- Clustermesh API server image.
+  image:
+    repository: "quay.m.daocloud.io/cilium/clustermesh-apiserver"

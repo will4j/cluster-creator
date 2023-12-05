@@ -25,3 +25,4 @@ cluster:
 
 k8s:
   version: "1.28.4-1.1"
+  control_plane_endpoint: cluster-endpoint.k8s.{{ cluster.apex_domain }}

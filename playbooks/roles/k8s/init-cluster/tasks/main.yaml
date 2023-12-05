@@ -1,0 +1,53 @@
+---
+- name: Check if kubeadm already inited
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_conf
+
+- name: Initialize the Kubernetes cluster using kubeadm
+  when: not kubelet_conf.stat.exists
+  # https://kubernetes.io/zh-cn/docs/reference/setup-tools/kubeadm/kubeadm-init/
+  ansible.builtin.shell: |
+    kubeadm init --image-repository='registry.cn-hangzhou.aliyuncs.com/google_containers' \
+      --pod-network-cidr=10.244.0.0/16 --upload-certs --control-plane-endpoint={{ k8s.control_plane_endpoint }} \
+      --apiserver-advertise-address {{ ansible_host }}
+
+- name: Config init master node as kubernetes admin
+  block:
+    - name: Create .kube directory
+      ansible.builtin.command: mkdir -p /home/{{ ansible_ssh_user }}/.kube
+    - name: Copy /etc/kubernetes/admin.conf
+      ansible.builtin.copy:
+        remote_src: true
+        src: /etc/kubernetes/admin.conf
+        dest: /home/{{ ansible_ssh_user }}/.kube/config
+
+- name: Config local host as kubernetes admin
+  tags:
+    - admin-local
+  block:
+    - name: Fetch /etc/kubernetes/admin.conf
+      run_once: true
+      ansible.builtin.fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: ~/.kube/{{ cluster.name }}-config
+        flat: true
+    - name: Chmod 600 of {{ cluster.name }}-config
+      run_once: true
+      become: false
+      delegate_to: localhost
+      ansible.builtin.command: chmod 600 ~/.kube/{{ cluster.name }}-config
+
+- name: Installing cluster network cni cilium
+  run_once: true
+  become: false
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: cilium
+    release_namespace: kube-system
+    create_namespace: true
+    # https://artifacthub.io/packages/helm/cilium/cilium
+    chart_ref: helm/charts/cilium-1.14.4.tgz
+    values: "{{ lookup('ansible.builtin.file', 'cilium-values.yaml') | from_yaml }}"
+    state: present
+    wait: true
