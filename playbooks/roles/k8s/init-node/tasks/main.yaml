@@ -1,0 +1,77 @@
+---
+# https://kubernetes.io/docs/setup/production-environment/container-runtimes/#forwarding-ipv4-and-letting-iptables-see-bridged-traffic
+- name: Forwarding IPv4
+  ansible.builtin.shell: |
+    cat <<EOF | tee /etc/modules-load.d/k8s.conf
+    overlay
+    br_netfilter
+    EOF
+    
+    modprobe overlay
+    modprobe br_netfilter
+  args:
+    creates: /etc/modules-load.d/k8s.conf
+
+- name: Letting iptables see bridged traffic
+  ansible.builtin.shell: |
+    # sysctl params required by setup, params persist across reboots
+    cat <<EOF | tee /etc/sysctl.d/k8s.conf
+    net.bridge.bridge-nf-call-iptables  = 1
+    net.bridge.bridge-nf-call-ip6tables = 1
+    net.ipv4.ip_forward                 = 1
+    EOF
+    
+    # Apply sysctl params without reboot
+    sysctl --system
+  args:
+    creates: /etc/sysctl.d/k8s.conf
+
+- name: Disable swap
+  block:
+    - name: swap off
+      ansible.builtin.command: swapoff -a
+    - name: comment swap in /etc/fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        replace: '# \1'
+
+# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
+- name: Install pre apt packages for kubernetes
+  ansible.builtin.apt:
+    update_cache: yes
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gpg
+    state: present
+
+- name: Add kubernetes official GPG key
+  ansible.builtin.shell: |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | \
+      gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo \
+      "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" | \
+      tee /etc/apt/sources.list.d/kubernetes.list > /dev/null
+
+# Install kubeadm, kubelet and kubectl
+- name: Install kubeadm, kubelet and kubectl
+  ansible.builtin.apt:
+    update_cache: yes
+    allow_change_held_packages: false
+    name:
+      - "kubelet={{ k8s.version }}"
+      - "kubeadm={{ k8s.version }}"
+      - "kubectl={{ k8s.version }}"
+    state: present
+  register: kube_tools
+
+- name: Config kube tools
+  when: kube_tools.changed
+  block:
+    - name: Hold version of kubeadm, kubelet and kubectl
+      ansible.builtin.shell: apt-mark hold kubelet kubeadm kubectl
+
+    - name: Load kubelet on system start
+      ansible.builtin.shell: systemctl enable kubelet

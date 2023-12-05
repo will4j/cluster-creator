@@ -22,3 +22,6 @@ cluster:
   desc_name: Example
   apex_domain: example.com
   admin_email: exaops@example.com
+
+k8s:
+  version: "1.28.4-1.1"
