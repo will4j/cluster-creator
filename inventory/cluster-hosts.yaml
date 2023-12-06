@@ -30,3 +30,10 @@ all:
     nfs_server:
       hosts:
         example-data-1:
+
+    gpus:
+      children:
+        gpu_a40:
+
+    gpu_a40:
+      hosts:

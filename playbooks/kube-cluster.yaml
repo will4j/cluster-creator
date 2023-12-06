@@ -81,6 +81,13 @@
       tags:
         - nfs-pvc
 
+- hosts: gpus
+  become: yes
+  roles:
+    - role: infra/nvidia-cri
+      tags:
+        - nvidia-cri
+
 - hosts: all
   become: false
   roles:
