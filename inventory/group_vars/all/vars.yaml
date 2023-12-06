@@ -25,11 +25,12 @@ cluster:
 
 k8s:
   version: "1.28.4-1.1"
-  control_plane_endpoint: cluster-endpoint.k8s.{{ cluster.apex_domain }}
+  control_plane_endpoint: "cluster-endpoint.k8s.{{ cluster.apex_domain }}"
 
+first_control_plane: "{{ groups['primary_control_planes'][0] }}"
 pangu:
-  host: {{ groups['primary_control_planes'][0] }}
-  ip: {{ hostvars[pangu.host].ansible_host }}
+  host: "{{ first_control_plane }}"
+  ip: "{{ hostvars[first_control_plane].ansible_host }}"
 
 nfs:
   share_dir: /data/nfs_share
@@ -51,7 +52,7 @@ cert:
     locality: "Hangzhou"
 
 dashboard:
-  host: dashboard.k8s.{{ cluster.apex_domain }}
+  host: "dashboard.k8s.{{ cluster.apex_domain }}"
 
 storage_class: nfs-client-example-data-1
 
@@ -62,7 +63,7 @@ harbor:
   storage_class: "{{ storage_class }}"
   # The secret key used for encryption. Must be a string of 16 chars
   secret_key: "Valar--Morghulis"
-  robot_name: robot${{ cluster.name }}-rw-robot
+  robot_name: "robot${{ cluster.name }}-rw-robot"
   robot_password: "{{ vault_harbor_robot_password }}"
 
 mongodb:
