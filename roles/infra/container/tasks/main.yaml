@@ -23,6 +23,11 @@
       - gnupg
     state: present
 
+- name: Create /etc/apt/keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+
 # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/shell_module.html#ansible-collections-ansible-builtin-shell-module
 - name: Add Docker's official GPG key
   ansible.builtin.shell: |
