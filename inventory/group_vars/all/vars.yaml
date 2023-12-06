@@ -28,8 +28,8 @@ k8s:
   control_plane_endpoint: cluster-endpoint.k8s.{{ cluster.apex_domain }}
 
 pangu:
-  host: example-master-1
-  ip: 192.168.100.1
+  host: {{ groups['primary_control_planes'][0] }}
+  ip: {{ hostvars[pangu.host].ansible_host }}
 
 nfs:
   share_dir: /data/nfs_share
