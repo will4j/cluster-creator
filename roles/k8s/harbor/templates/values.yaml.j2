@@ -44,15 +44,39 @@ database:
   type: internal
   internal:
     password: {{ harbor.db_password }}
+    image:
+      repository: {{ registry.mirror_docker.io }}/goharbor/harbor-db
 redis:
   # if external Redis is used, set "type" to "external"
   # and fill the connection information in "external" section
   type: internal
+  internal:
+    image:
+      repository: {{ registry.mirror_docker.io }}/goharbor/redis-photon
 
+portal:
+  replicas: 1
+  image:
+    repository: {{ registry.mirror_docker.io }}/goharbor/harbor-portal
 core:
   replicas: 2
+  image:
+    repository: {{ registry.mirror_docker.io }}/goharbor/harbor-core
+jobservice:
+  image:
+    repository: {{ registry.mirror_docker.io }}/goharbor/harbor-jobservice
 registry:
   replicas: 2
+  registry:
+    image:
+      repository: {{ registry.mirror_docker.io }}/goharbor/registry-photon
+  controller:
+    image:
+      repository: {{ registry.mirror_docker.io }}/goharbor/harbor-registryctl
+trivy:
+  replicas: 1
+  image:
+    repository: {{ registry.mirror_docker.io }}/goharbor/trivy-adapter-photon
 # cache layer configurations
 # if this feature enabled, harbor will cache the resource
 # `project/project_metadata/repository/artifact/manifest` in the redis

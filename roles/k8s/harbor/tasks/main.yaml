@@ -32,7 +32,7 @@
     release_name: harbor
     release_namespace: harbor
     create_namespace: true
-    # https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
+    # https://artifacthub.io/packages/helm/harbor/harbor
     chart_ref: ../helm/charts/harbor-1.13.1.tgz
     values: "{{ lookup('ansible.builtin.template', 'values.yaml.j2') | from_yaml }}"
     state: present

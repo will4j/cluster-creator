@@ -81,3 +81,6 @@ docker:
   username: "{{ vault_docker_username }}"
   password: "{{ vault_docker_password }}"
   email: "{{ vault_docker_email }}"
+
+registry:
+  mirror_docker.io: docker.m.daocloud.io
