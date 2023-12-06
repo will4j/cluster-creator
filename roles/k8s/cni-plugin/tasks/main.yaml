@@ -9,6 +9,6 @@
     create_namespace: true
     # https://artifacthub.io/packages/helm/cilium/cilium
     chart_ref: ../helm/charts/cilium-1.14.4.tgz
-    values: "{{ lookup('ansible.builtin.file', 'cilium-values.yaml') | from_yaml }}"
+    values: "{{ lookup('ansible.builtin.template', 'cilium-values.yaml.j2') | from_yaml }}"
     state: present
     wait: true

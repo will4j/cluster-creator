@@ -1,6 +1,6 @@
-# https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/blob/master/charts/nfs-subdir-external-provisioner/values.yaml
+# https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/blob/nfs-subdir-external-provisioner-4.0.18/charts/nfs-subdir-external-provisioner/values.yaml
 image:
-  repository: registry.cn-hangzhou.aliyuncs.com/weiyigeek/nfs-subdir-external-provisioner
+  repository: {{ registry.mirror_registry_k8s_io }}/sig-storage/nfs-subdir-external-provisioner
 
 nfs:
   server: {{ ansible_nodename }}

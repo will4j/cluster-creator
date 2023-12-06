@@ -1,16 +1,16 @@
 # https://github.com/cilium/cilium/blob/v1.14.4/install/kubernetes/cilium/values.yaml
 image:
-  repository: "quay.m.daocloud.io/cilium/cilium"
+  repository: {{ registry.mirror_quay_io }}/cilium/cilium
 
 certgen:
   image:
-    repository: "quay.m.daocloud.io/cilium/certgen"
+    repository: {{ registry.mirror_quay_io }}/cilium/certgen
 
 relay:
   # -- Enable Hubble Relay (requires hubble.enabled=true)
   enabled: true
   image:
-    repository: "quay.m.daocloud.io/cilium/hubble-relay"
+    repository: {{ registry.mirror_quay_io }}/cilium/hubble-relay
 
 ui:
   # -- Whether to enable the Hubble UI.
@@ -18,20 +18,20 @@ ui:
   backend:
     # -- Hubble-ui backend image.
     image:
-      repository: "quay.m.daocloud.io/cilium/hubble-ui-backend"
+      repository: {{ registry.mirror_quay_io }}/cilium/hubble-ui-backend
   frontend:
     # -- Hubble-ui frontend image.
     image:
-      repository: "quay.m.daocloud.io/cilium/hubble-ui"
+      repository: {{ registry.mirror_quay_io }}/cilium/hubble-ui
 
 operator:
   # -- Enable the cilium-operator component (required).
   enabled: true
   # -- cilium-operator image.
   image:
-    repository: "quay.m.daocloud.io/cilium/operator"
+    repository: {{ registry.mirror_quay_io }}/cilium/operator
 
 apiserver:
   # -- Clustermesh API server image.
   image:
-    repository: "quay.m.daocloud.io/cilium/clustermesh-apiserver"
+    repository: {{ registry.mirror_quay_io }}/cilium/clustermesh-apiserver

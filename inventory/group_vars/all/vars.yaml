@@ -83,4 +83,6 @@ docker:
   email: "{{ vault_docker_email }}"
 
 registry:
-  mirror_docker.io: docker.m.daocloud.io
+  mirror_docker_io: docker.m.daocloud.io
+  mirror_quay_io: quay.m.daocloud.io
+  mirror_registry_k8s_io: k8s.m.daocloud.io

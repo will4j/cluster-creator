@@ -60,11 +60,11 @@
         replace: '\1SystemdCgroup = true\2'
       notify: Restart containerd
 
-    - name: Update sandbox image with aliyuncs registry
+    - name: Update sandbox image with registry mirror
       ansible.builtin.replace:
         path: /etc/containerd/config.toml
-        regexp: '(\s+)sandbox_image = "registry\.k8s\.io/pause:3\.6"(\s+.*)?$'
-        replace: '\1sandbox_image = "registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.9"\2'
+        regexp: '(\s+)sandbox_image = "registry\.k8s\.io/pause:[0-9\.]+"(\s+.*)?$'
+        replace: '\1sandbox_image = "{{ registry.mirror_registry_k8s_io }}/pause:3.9"\2'
       notify: Restart containerd
 
     - name: Restart containerd immediately if necessary

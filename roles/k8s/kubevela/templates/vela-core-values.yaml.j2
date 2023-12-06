@@ -1,21 +1,21 @@
-# https://github.com/kubevela/kubevela/blob/master/charts/vela-core/values.yaml
+# https://github.com/kubevela/kubevela/blob/v1.9.7/charts/vela-core/values.yaml
 ## @param imageRegistry Image registry
-imageRegistry: "m.daocloud.io/"
+imageRegistry: {{ registry.mirror_docker_io }}/
 image:
-  repository: docker.io/oamdev/vela-core
+  repository: oamdev/vela-core
   tag: v1.9.7
 
 multicluster:
   clusterGateway:
     image:
-      repository: docker.io/oamdev/cluster-gateway
+      repository: oamdev/cluster-gateway
       tag: v1.9.0-alpha.2
 
 ## @skip admissionWebhooks
 admissionWebhooks:
   patch:
     image:
-      repository: docker.io/oamdev/kube-webhook-certgen
+      repository: oamdev/kube-webhook-certgen
       tag: v2.4.1
 
 ## @param affinity Affinity

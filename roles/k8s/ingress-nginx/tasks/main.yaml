@@ -7,7 +7,7 @@
     release_namespace: network
     create_namespace: true
     # https://artifacthub.io/packages/helm/ingress-nginx/ingress-nginx
-    chart_ref: ../helm/charts/ingress-nginx-4.8.3.tgz
-    values: "{{ lookup('ansible.builtin.file', 'values.yaml') | from_yaml }}"
+    chart_ref: ../helm/charts/ingress-nginx-4.8.4.tgz
+    values: "{{ lookup('ansible.builtin.template', 'values.yaml.j2') | from_yaml }}"
     state: present
     wait: true

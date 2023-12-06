@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: quay.m.daocloud.io/jetstack/cert-manager-controller
+  repository: {{ registry.mirror_quay_io }}/jetstack/cert-manager-controller
 
 affinity:
   nodeAffinity:
@@ -14,7 +14,7 @@ affinity:
 
 cainjector:
   image:
-    repository: quay.m.daocloud.io/jetstack/cert-manager-cainjector
+    repository: {{ registry.mirror_quay_io }}/jetstack/cert-manager-cainjector
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -25,7 +25,7 @@ cainjector:
 
 webhook:
   image:
-    repository: quay.m.daocloud.io/jetstack/cert-manager-webhook
+    repository: {{ registry.mirror_quay_io }}/jetstack/cert-manager-webhook
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -36,7 +36,7 @@ webhook:
 
 startupapicheck:
   image:
-    repository: quay.m.daocloud.io/jetstack/cert-manager-ctl
+    repository: {{ registry.mirror_quay_io }}/jetstack/cert-manager-ctl
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

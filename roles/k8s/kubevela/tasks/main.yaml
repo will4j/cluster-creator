@@ -8,7 +8,7 @@
     create_namespace: true
     # https://artifacthub.io/packages/helm/kubevela/vela-core
     chart_ref: ../helm/charts/vela-core-1.9.7.tgz
-    values: "{{ lookup('ansible.builtin.file', 'vela-core-values.yaml') | from_yaml }}"
+    values: "{{ lookup('ansible.builtin.template', 'vela-core-values.yaml.j2') | from_yaml }}"
     state: present
     wait: true
 
