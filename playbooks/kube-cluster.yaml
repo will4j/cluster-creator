@@ -21,11 +21,14 @@
     - role: infra/reboot
 
 - hosts: kube_cluster
-  tags:
-    - init-node
   become: yes
   roles:
     - role: k8s/init-node
+      tags:
+        - init-node
+    - role: infra/hostname
+      tags:
+        - hostname
 
 - hosts: primary_control_planes
   become: yes

@@ -41,3 +41,9 @@ tasks:
     cmds:
       - ansible-playbook -i inventory/local-hosts.yaml --tags "ca-download" {{.CLI_ARGS}}
         --vault-password-file .vault_password playbooks/local-ops.yaml
+
+  set-hostname:
+    desc: set hostname for cluster node
+    cmds:
+      - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password
+        --tags "hostname" playbooks/kube-cluster.yaml
