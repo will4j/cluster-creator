@@ -93,8 +93,10 @@ gitlab:
   host: "gitlab.{{ cluster.apex_domain }}"
   tls_secret: gitlab-tls-secret
   root_password: "{{ vault_gitlab_root_password }}"
-  redis_password: "{{ vault_gitlab_redis_password }}"
-  postgresql_password: "{{ vault_gitlab_postgresql_password }}"
+  redis:
+    storage_class: "{{ storage_class }}"
+  psql:
+    storage_class: "{{ storage_class }}"
   minio:
     storage_class: "{{ storage_class }}"
     storage_size: 20Gi

@@ -32,32 +32,6 @@
       data:
         password: "{{ gitlab.root_password | b64encode }}"
 
-- name: Create gitlab-redis-secret
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: gitlab-redis-secret
-        namespace: gitlab
-      type: Opaque
-      data:
-        redis-password: "{{ gitlab.redis_password | b64encode }}"
-
-- name: Create gitlab-postgresql-secret
-  kubernetes.core.k8s:
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: gitlab-postgresql-secret
-        namespace: gitlab
-      type: Opaque
-      data:
-        postgresql-password: "{{ gitlab.postgresql_password | b64encode }}"
-
 - name: Installing the gitlab chart
   kubernetes.core.helm:
     release_name: gitlab

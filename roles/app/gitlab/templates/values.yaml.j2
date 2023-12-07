@@ -47,13 +47,19 @@ global:
 ## Configuration of Redis
 ## https://docs.gitlab.com/charts/architecture/decisions#redis
 ## https://docs.gitlab.com/charts/installation/deployment.html#redis
+# https://docs.gitlab.com/charts/charts/globals#configure-redis-settings
 redis:
   install: true
+  global:
+    storageClass: {{ gitlab.redis.storage_class }}
 
 ## Installation & configuration of stable/prostgresql
 ## See requirements.yaml for current version
+# https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
 postgresql:
   install: true
+  global:
+    storageClass: {{ gitlab.psql.storage_class }}
 
 ## Settings to for the Let's Encrypt ACME Issuer
 # certmanager-issuer:
