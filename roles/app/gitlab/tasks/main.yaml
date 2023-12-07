@@ -38,7 +38,7 @@
         namespace: gitlab
       type: Opaque
       data:
-        password: "{{ gitlab_root_password | b64encode }}"
+        password: "{{ gitlab.root_password | b64encode }}"
 
 - name: Installing the gitlab chart
   run_once: true
