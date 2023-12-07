@@ -29,12 +29,9 @@ global:
   initialRootPassword:
     secret: gitlab-root-password-secret
 
-  ## https://docs.gitlab.com/charts/charts/globals#configure-postgresql-settings
-  psql:
-    password:
-      useSecret: true
-      secret: gitlab-postgresql-secret
-      key: postgresql-password
+  ## https://docs.gitlab.com/charts/charts/globals#configure-gitlab-shell
+  shell:
+    port: 30022
 
   ## Timezone for containers.
   time_zone: Beijing
