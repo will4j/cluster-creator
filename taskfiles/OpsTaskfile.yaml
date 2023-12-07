@@ -46,3 +46,9 @@ tasks:
     cmds:
       - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password
         --tags "hostname" playbooks/kube-cluster.yaml
+
+  app:gitlab:
+    desc: install app gitlab
+    cmds:
+      - ansible-playbook -i inventory/local-hosts.yaml --tags "gitlab" --vault-password-file .vault_password
+        {{.CLI_ARGS}} playbooks/local-ops.yaml

@@ -5,3 +5,6 @@
       tags:
         - ssh-keys
     - role: local/k8s-tasks
+    - role: app/gitlab
+      tags:
+        - gitlab

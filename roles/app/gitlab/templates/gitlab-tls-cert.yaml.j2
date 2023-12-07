@@ -1,0 +1,35 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gitlab-tls-cert
+  namespace: gitlab
+# https://cert-manager.io/docs/reference/api-docs/#cert-manager.io/v1.Certificate
+spec:
+  isCA: false
+  commonName: "Gitlab of {{ cluster.desc_name }}"
+  secretName: {{ gitlab.tls_secret }}
+  duration: {{ cert.duration }}
+  renewBefore: {{ cert.renew_before }}
+  subject:
+    countries:
+      - "{{ cert.subject.country }}"
+    provinces:
+      - "{{ cert.subject.province }}"
+    localities:
+      - "{{ cert.subject.locality }}"
+    organizations:
+      - "{{ cluster.desc_name }}"
+    organizationalUnits:
+      - "DevOps"
+  dnsNames:
+    - "{{ gitlab.host }}"
+    - "*.{{ gitlab.host }}"
+  emailAddresses:
+    - "{{ cluster.admin_email }}"
+  privateKey:
+    algorithm: {{ cert.private_key.algorithm }}
+    size: {{ cert.private_key.size }}
+  issuerRef:
+    name: "{{ cert.cluster_issuer_name }}"
+    kind: ClusterIssuer
+    group: cert-manager.io

@@ -88,3 +88,14 @@ registry:
   mirror_docker_io: docker.m.daocloud.io
   mirror_quay_io: quay.m.daocloud.io
   mirror_registry_k8s_io: k8s.m.daocloud.io
+
+gitlab:
+  host: "gitlab.{{ cluster.apex_domain }}"
+  tls_secret: gitlab-tls-secret
+  root_password: "{{ vault_gitlab_root_password }}"
+  minio:
+    storage_class: "{{ storage_class }}"
+    storage_size: 20Gi
+  gitaly:
+    storage_class: "{{ storage_class }}"
+    storage_size: 30Gi

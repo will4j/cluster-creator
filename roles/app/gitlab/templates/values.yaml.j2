@@ -1,0 +1,109 @@
+# https://jihulab.com/gitlab-cn/charts/gitlab/-/blob/v7.6.1/values.yaml
+---
+## The global properties are used to configure multiple charts at once.
+## https://docs.gitlab.com/charts/charts/globals
+global:
+  ## https://docs.gitlab.com/charts/installation/deployment#deploy-the-community-edition
+  edition: ee
+
+  ## https://docs.gitlab.com/charts/charts/globals#configure-host-settings
+  hosts:
+    domain: {{ cluster.apex_domain }}
+    gitlab:
+      name: {{ gitlab.host }}
+      https: true
+    ssh: {{ gitlab.host }}
+
+  ## https://docs.gitlab.com/charts/charts/globals#configure-ingress-settings
+  ingress:
+    configureCertmanager: false
+    provider: nginx
+    enabled: true
+    tls:
+      enabled: true
+      secretName: {{ gitlab.tls_secret }}
+
+  ## Timezone for containers.
+  time_zone: Beijing
+
+  ## https://docs.gitlab.com/charts/charts/globals#custom-certificate-authorities
+  # configuration of certificates container & custom CA injection
+  certificates:
+    customCAs:
+      - secret: {{ gitlab.tls_secret }}
+        keys:
+          - ca.crt
+
+## Configuration of Redis
+## https://docs.gitlab.com/charts/architecture/decisions#redis
+## https://docs.gitlab.com/charts/installation/deployment.html#redis
+redis:
+  install: true
+
+## Installation & configuration of stable/prostgresql
+## See requirements.yaml for current version
+postgresql:
+  install: true
+
+## Settings to for the Let's Encrypt ACME Issuer
+# certmanager-issuer:
+#   # The email address to register certificates requested from Let's Encrypt.
+#   # Required if using Let's Encrypt.
+#   email: email@example.com
+
+## Installation & configuration of jetstack/cert-manager
+## See requirements.yaml for current version
+certmanager:
+  installCRDs: false
+  # Install cert-manager chart. Set to false if you already have cert-manager
+  # installed or if you are not using cert-manager.
+  install: false
+
+## https://docs.gitlab.com/charts/charts/nginx/
+## https://docs.gitlab.com/charts/architecture/decisions#nginx-ingress
+## Installation & configuration of charts/ingress-nginx:
+nginx-ingress:
+  enabled: false
+
+## Installation & configuration of stable/prometheus
+## See requirements.yaml for current version
+prometheus:
+  install: false
+
+## Installation & configuration charts/registry
+## https://docs.gitlab.com/charts/architecture/decisions#registry
+## https://docs.gitlab.com/charts/charts/registry/
+registry:
+  enabled: false
+
+## Automatic shared secret generation
+## https://docs.gitlab.com/charts/installation/secrets
+## https://docs.gitlab.com/charts/charts/shared-secrets.html
+shared-secrets:
+  enabled: false
+
+## Installation & configuration of gitlab/gitlab-runner
+## See requirements.yaml for current version
+gitlab-runner:
+  install: false
+
+## https://docs.gitlab.com/charts/charts/minio/index.html
+minio:
+  ingress:
+    enabled: false
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    storageClass: "{{ gitlab.minio.storage_class }}"
+    size: {{ gitlab.minio.storage_size }}
+
+## Settings for individual sub-charts under GitLab
+## Note: Many of these settings are configurable via globals
+gitlab:
+  ## https://docs.gitlab.com/charts/charts/gitlab/gitaly
+  gitaly:
+    persistence:
+      enabled: true
+      accessMode: ReadWriteOnce
+      storageClass: "{{ gitlab.gitaly.storage_class }}"
+      size: {{ gitlab.gitaly.storage_size }}
