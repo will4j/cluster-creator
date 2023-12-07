@@ -58,11 +58,14 @@
     - role: k8s/join-worker
 
 - hosts: control_planes
-  tags:
-    - post-config
   become: yes
   roles:
     - role: k8s/post-config
+      tags:
+        - post-config
+    - role: k8s/gpushare
+      tags:
+        - gpushare
 
 - hosts: kube_cluster
   tags:
@@ -91,6 +94,9 @@
 - hosts: all
   become: false
   roles:
+    - role: k8s/label-node
+      tags:
+        - label-node
     - role: k8s/metrics-server
       tags:
         - metrics-server

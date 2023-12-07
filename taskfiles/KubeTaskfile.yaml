@@ -55,6 +55,9 @@ tasks:
       - task: 2.1
       - task: 2.2
       - task: 2.3
+      - task: 2.4
+      - task: 2.5
+      - task: 2.6
 
   2.1:
     desc: init first kubernetes control plane
@@ -79,11 +82,25 @@ tasks:
           TAGS: join
 
   2.4:
-    desc: post config for kubernetes cluster
+    desc: post config for kubernetes cluster init
     cmds:
       - task: kube-cluster
         vars:
           TAGS: post-config
+
+  2.5:
+    desc: label kubernetes cluster node
+    cmds:
+      - task: kube-cluster
+        vars:
+          TAGS: label-node
+
+  2.6:
+    desc: init gpushare plugin
+    cmds:
+      - task: kube-cluster
+        vars:
+          TAGS: gpushare
 
   # 3 config basic cluster component
   3:

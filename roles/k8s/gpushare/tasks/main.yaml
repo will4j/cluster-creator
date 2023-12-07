@@ -1,0 +1,73 @@
+---
+# https://github.com/AliyunContainerService/gpushare-scheduler-extender/blob/master/docs/install.md
+# 1. Deploy GPU share scheduler extender in control plane
+- name: Deploy GPU share scheduler extender in control plane
+  run_once: true
+  become: false
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    apply: yes
+    src : gpushare-schd-extender.yaml
+# 2. Modify scheduler configuration
+- name: Copy scheduler config file into /etc/kubernetes
+  ansible.builtin.copy:
+    src: scheduler-policy-config.yaml
+    dest: /etc/kubernetes/scheduler-policy-config.yaml
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+- name: Add Policy config file parameter in scheduler arguments
+  ansible.builtin.lineinfile:
+    path: /etc/kubernetes/manifests/kube-scheduler.yaml
+    insertafter: ".*leader-elect=.*"
+    line: "    - --config=/etc/kubernetes/scheduler-policy-config.yaml"
+    state: present
+- name: Add volumeMounts into Pod Spec
+  ansible.builtin.blockinfile:
+    path: /etc/kubernetes/manifests/kube-scheduler.yaml
+    insertafter: '\s+volumeMounts:\s*'
+    marker: "# {mark} ANSIBLE MANAGED volumeMounts"
+    block: "    - mountPath: /etc/kubernetes/scheduler-policy-config.yaml\n      name: scheduler-policy-config\n      readOnly: true"
+- name: Add volumes into Pod Spec
+  ansible.builtin.blockinfile:
+    path: /etc/kubernetes/manifests/kube-scheduler.yaml
+    insertafter: '\s+volumes:\s*'
+    marker: "# {mark} ANSIBLE MANAGED volumes"
+    block: "  - hostPath:\n      path: /etc/kubernetes/scheduler-policy-config.yaml\n      type: FileOrCreate\n    name: scheduler-policy-config"
+# 3. Deploy Device Plugin
+- name: RBAC of device plugin
+  run_once: true
+  become: false
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    apply: yes
+    src : device-plugin-rbac.yaml
+- name: DaemonSet of device plugin
+  run_once: true
+  become: false
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    apply: yes
+    src : device-plugin-ds.yaml
+# 4. Add gpushare node labels to the nodes requiring GPU sharing
+- name: Label node with gpushare
+  become: false
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    kind: Node
+    name: "{{ item }}"
+    definition:
+      metadata:
+        labels:
+          gpushare: "true"
+  loop: "{{ query('inventory_hostnames', 'gpus') }}"
+# 5. Install Kubectl extension on local machine (k8s management node)
+## cd /usr/bin/
+## wget https://github.com/AliyunContainerService/gpushare-device-plugin/releases/download/v0.3.0/kubectl-inspect-gpushare
+## chmod u+x /usr/bin/kubectl-inspect-gpushare
+## use $kubectl inspect gpushare [-d]

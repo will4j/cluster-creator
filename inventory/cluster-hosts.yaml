@@ -23,6 +23,9 @@ all:
         example-worker-1:
         example-worker-2:
 
+    backend:
+      hosts:
+
     kube_cluster:
       children:
         control_planes:
