@@ -44,8 +44,8 @@
   run_once: true
   delegate_to: localhost
   kubernetes.core.helm:
-    release_name: vela-core
-    release_namespace: vela-system
+    release_name: gitlab
+    release_namespace: gitlab
     create_namespace: true
     # https://artifacthub.io/packages/helm/gitlab-jh/gitlab
     chart_ref: ../helm/charts/gitlab-7.6.1.tgz
