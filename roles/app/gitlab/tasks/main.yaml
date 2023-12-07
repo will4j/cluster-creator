@@ -1,7 +1,5 @@
 ---
 - name: Create gitlab namespace
-  run_once: true
-  delegate_to: localhost
   kubernetes.core.k8s:
     name: gitlab
     api_version: v1
@@ -9,8 +7,6 @@
     state: present
 
 - name: Check if certificates gitlab-tls-cert exists
-  run_once: true
-  delegate_to: localhost
   ansible.builtin.shell: kubectl -n gitlab get certificates.cert-manager.io gitlab-tls-cert
   register: gitlab_tls_cert
   ignore_errors: true
@@ -18,16 +14,12 @@
 
 - name: Create gitlab-tls-cert
   when: gitlab_tls_cert.stdout == ""
-  run_once: true
-  delegate_to: localhost
   kubernetes.core.k8s:
     state: present
     apply: yes
     definition: "{{ lookup('ansible.builtin.template', 'gitlab-tls-cert.yaml.j2') | from_yaml }}"
 
 - name: Create gitlab-root-password-secret
-  run_once: true
-  delegate_to: localhost
   kubernetes.core.k8s:
     state: present
     definition:
@@ -40,9 +32,33 @@
       data:
         password: "{{ gitlab.root_password | b64encode }}"
 
+- name: Create gitlab-redis-secret
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: gitlab-redis-secret
+        namespace: gitlab
+      type: Opaque
+      data:
+        redis-password: "{{ gitlab.redis_password | b64encode }}"
+
+- name: Create gitlab-postgresql-secret
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: gitlab-postgresql-secret
+        namespace: gitlab
+      type: Opaque
+      data:
+        postgresql-password: "{{ gitlab.postgresql_password | b64encode }}"
+
 - name: Installing the gitlab chart
-  run_once: true
-  delegate_to: localhost
   kubernetes.core.helm:
     release_name: gitlab
     release_namespace: gitlab

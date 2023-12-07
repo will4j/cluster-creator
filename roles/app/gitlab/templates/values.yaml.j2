@@ -23,6 +23,19 @@ global:
       enabled: true
       secretName: {{ gitlab.tls_secret }}
 
+  ## Initial root password for this GitLab installation
+  ## Secret created according to https://docs.gitlab.com/charts/installation/secrets#initial-root-password
+  ## If allowing shared-secrets generation, this is OPTIONAL.
+  initialRootPassword:
+    secret: gitlab-root-password-secret
+
+  ## https://docs.gitlab.com/charts/charts/globals#configure-postgresql-settings
+  psql:
+    password:
+      useSecret: true
+      secret: gitlab-postgresql-secret
+      key: postgresql-password
+
   ## Timezone for containers.
   time_zone: Beijing
 
