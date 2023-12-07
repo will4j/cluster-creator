@@ -7,7 +7,7 @@ metadata:
 spec:
   isCA: false
   commonName: "Harbor of {{ cluster.desc_name }}"
-  secretName: harbor-tls-secret
+  secretName: {{ harbor.tls_secret }}
   duration: {{ cert.duration }}
   renewBefore: {{ cert.renew_before }}
   subject:

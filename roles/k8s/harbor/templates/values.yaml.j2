@@ -4,7 +4,7 @@ expose:
     enable: true
     certSource: secret
     secret:
-      secretName: harbor-tls-secret
+      secretName: {{ harbor.tls_secret }}
   ingress:
     hosts:
       core: {{ harbor.host }}

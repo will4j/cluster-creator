@@ -58,6 +58,7 @@ storage_class: nfs-client-example-data-1
 
 harbor:
   host: "harbor.{{ cluster.apex_domain }}"
+  tls_secret: harbor-tls-secret
   admin_password: "{{ vault_harbor_admin_password }}"
   db_password: "{{ vault_harbor_db_password }}"
   storage_class: "{{ storage_class }}"
