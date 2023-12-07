@@ -60,9 +60,12 @@
 - hosts: control_planes
   become: yes
   roles:
-    - role: k8s/post-config
+    - role: k8s/apiserver-port
       tags:
-        - post-config
+        - apiserver-port
+    - role: k8s/control-plane-schedule
+      tags:
+        - control-plane-schedule
     - role: k8s/gpushare
       tags:
         - gpushare

@@ -1,0 +1,7 @@
+---
+- name: Change default api server node port range
+  ansible.builtin.lineinfile:
+    path: /etc/kubernetes/manifests/kube-apiserver.yaml
+    insertafter: ".*service-cluster-ip-range=.*"
+    line: "    - --service-node-port-range=50-32767"
+    state: present
