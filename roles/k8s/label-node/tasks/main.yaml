@@ -3,25 +3,13 @@
   become: false
   run_once: true
   delegate_to: localhost
-  kubernetes.core.k8s:
-    state: present
-    kind: Node
-    name: "{{ item }}"
-    definition:
-      metadata:
-        labels:
-          "{{ cluster.name }}/gpu": "a40"
+  ansible.builtin.shell: |
+    kubectl label nodes {{ item }} {{ cluster.name }}/gpu=a40
   loop: "{{ query('inventory_hostnames', 'gpu_a40') }}"
 - name: Label backend server
   become: false
   run_once: true
   delegate_to: localhost
-  kubernetes.core.k8s:
-    state: present
-    kind: Node
-    name: "{{ item }}"
-    definition:
-      metadata:
-        labels:
-          "{{ cluster.apex_domain }}/backend": ""
+  ansible.builtin.shell: |
+    kubectl label nodes {{ item }} {{ cluster.name }}/backend=""
   loop: "{{ query('inventory_hostnames', 'backend') }}"
