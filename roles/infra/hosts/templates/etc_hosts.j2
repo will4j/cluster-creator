@@ -4,7 +4,15 @@
 {% if loop.first %}
  {{ k8s.control_plane_endpoint }} {{ dashboard.host }}
 {% elif loop.index == 2 %}
- {{ harbor.host }} {{ kubevela.host }}
+  {% if harbor.enabled %}
+ {{ harbor.host -}}
+  {% endif %}
+  {% if kubevela.enabled %}
+ {{ kubevela.host -}}
+  {% endif %}
+  {% if gitlab.enabled %}
+ {{ gitlab.host -}}
+  {% endif %}
 {% endif %}
 {% endfor %}
 

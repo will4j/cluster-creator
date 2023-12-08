@@ -78,6 +78,7 @@ mongodb:
   velaux_password: "{{ vault_mongodb_velaux_password }}"
 
 kubevela:
+  enabled: true
   host: "kubevela.{{ cluster.apex_domain }}"
 
 docker:
