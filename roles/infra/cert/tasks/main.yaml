@@ -13,7 +13,9 @@
     content: "{{ cert_ca_output.stdout }}"
     dest: "/usr/local/share/ca-certificates/{{ cert.ca_file }}"
     mode: u=rw,g=r,o=r
-  notify: update ca certificates
+  notify:
+    - Update ca certificates
+    - Restart containerd
 
 - name: Update ca certificates immediately if necessary
   ansible.builtin.meta: flush_handlers
