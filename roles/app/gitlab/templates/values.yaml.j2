@@ -6,6 +6,9 @@ global:
   ## https://docs.gitlab.com/charts/installation/deployment#deploy-the-community-edition
   edition: ee
 
+  # for redis and psql
+  storageClass: {{ gitlab.db.storage_class }}
+
   ## https://docs.gitlab.com/charts/charts/globals#configure-host-settings
   hosts:
     domain: {{ cluster.apex_domain }}
@@ -50,16 +53,12 @@ global:
 # https://docs.gitlab.com/charts/charts/globals#configure-redis-settings
 redis:
   install: true
-  global:
-    storageClass: {{ gitlab.redis.storage_class }}
 
 ## Installation & configuration of stable/prostgresql
 ## See requirements.yaml for current version
 # https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
 postgresql:
   install: true
-  global:
-    storageClass: {{ gitlab.psql.storage_class }}
 
 ## Settings to for the Let's Encrypt ACME Issuer
 # certmanager-issuer:
