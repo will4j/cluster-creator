@@ -1,24 +1,19 @@
 ---
 - hosts: all
-  tags:
-    - hosts
   become: yes
   roles:
     - role: infra/hosts
-
-- hosts: all
-  tags:
-    - container
-  become: yes
-  roles:
+      tags:
+        - hosts
     - role: infra/container
-
-- hosts: all
-  tags:
-    - reboot
-  become: yes
-  roles:
+      tags:
+        - container
     - role: infra/reboot
+      tags:
+        - reboot
+    - role: infra/cert
+      tags:
+        - cert
 
 - hosts: kube_cluster
   become: yes

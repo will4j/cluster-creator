@@ -1,0 +1,19 @@
+---
+- name: Export ca.crt
+  run_once: true
+  become: false
+  delegate_to: localhost
+  ansible.builtin.shell: kubectl -n cert-manager get secrets {{ cert.ca_secret_name }} -o jsonpath="{.data.ca\.crt}" | base64 --decode
+  register: cert_ca_output
+  changed_when: false
+
+- name: Trust cluster_ca.crt with cluster node
+  become: true
+  ansible.builtin.copy:
+    content: "{{ cert_ca_output.stdout }}"
+    dest: "/usr/local/share/ca-certificates/{{ cert.ca_file }}"
+    mode: u=rw,g=r,o=r
+  notify: update ca certificates
+
+- name: Update ca certificates immediately if necessary
+  ansible.builtin.meta: flush_handlers
