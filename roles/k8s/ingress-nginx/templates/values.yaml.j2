@@ -10,6 +10,10 @@ controller:
     nodePorts:
       http: 80
       https: 443
+      tcp:
+      {% if gitlab.enabled %}
+        30022: 30022
+      {% endif %}
 
   metrics:
     port: 10254
@@ -59,3 +63,11 @@ defaultBackend:
           - matchExpressions:
               - key: node-role.kubernetes.io/control-plane
                 operator: Exists
+
+# -- TCP service key-value pairs
+## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/exposing-tcp-udp-services.md
+##
+tcp:
+{% if gitlab.enabled %}
+  30022: "gitlab/gitlab-gitlab-shell:30022"
+{% endif %}
