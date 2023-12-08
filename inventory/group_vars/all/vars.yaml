@@ -81,6 +81,10 @@ kubevela:
   enabled: true
   host: "kubevela.{{ cluster.apex_domain }}"
 
+deploy_config:
+  git_bot_name: "{{ vault_deploy_config_git_bot_name }}"
+  git_bot_password: "{{ vault_deploy_config_git_bot_password }}"
+
 docker:
   username: "{{ vault_docker_username }}"
   password: "{{ vault_docker_password }}"

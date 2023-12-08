@@ -77,3 +77,21 @@
   run_once: true
   delegate_to: localhost
   ansible.builtin.command: vela config create harbor-repo --description=https://{{ harbor.host }} -t image-registry registry="{{ harbor.host }}" insecure=true auth.username="{{ harbor.robot_name }}" auth.password="{{ harbor.robot_password }}"
+
+- name: Create vela-config namespace
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    name: vela-config
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Set Deploy Config Git Bot Secret
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    namespace: vela-config
+    state: present
+    apply: yes
+    definition: "{{ lookup('ansible.builtin.template', 'deploy-config-git-secret.yaml.j2') | from_yaml }}"
