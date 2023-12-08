@@ -17,7 +17,7 @@ global:
   ## https://docs.gitlab.com/charts/charts/globals#configure-ingress-settings
   ingress:
     configureCertmanager: false
-    provider: nginx
+    class: nginx
     enabled: true
     tls:
       enabled: true
@@ -28,6 +28,10 @@ global:
   ## If allowing shared-secrets generation, this is OPTIONAL.
   initialRootPassword:
     secret: gitlab-root-password-secret
+
+  ## https://docs.gitlab.com/charts/charts/gitlab/kas/
+  kas:
+    enabled: false
 
   ## https://docs.gitlab.com/charts/charts/globals#configure-gitlab-shell
   shell:
