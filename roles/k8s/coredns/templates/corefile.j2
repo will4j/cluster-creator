@@ -18,12 +18,12 @@
     reload
     loadbalance
     hosts {{ cluster.apex_domain }} {
-    {% if harbor.enabled %}
+{% if harbor.enabled %}
       {{ pangu.ip }} {{ harbor.host }}
-    {% endif %}
-    {% if gitlab.enabled %}
+{% endif %}
+{% if gitlab.enabled %}
       {{ pangu.ip }} {{ gitlab.host }}
-    {% endif %}
+{% endif %}
       fallthrough
     }
 }
