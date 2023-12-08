@@ -59,6 +59,7 @@ tasks:
       - task: 2.5
       - task: 2.6
       - task: 2.7
+      - task: 2.8
 
   2.1:
     desc: init first kubernetes control plane
@@ -109,6 +110,13 @@ tasks:
       - task: kube-cluster
         vars:
           TAGS: gpushare
+
+  2.8:
+    desc: config inner domain to core dns config map
+    cmds:
+      - task: kube-cluster
+        vars:
+          TAGS: coredns
 
   # 3 config basic cluster component
   3:

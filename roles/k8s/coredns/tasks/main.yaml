@@ -1,0 +1,16 @@
+---
+- name: add inner domain to coredns config map
+  become: false
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: coredns
+        namespace: kube-system
+      data:
+        Corefile: |
+          {{ lookup('ansible.builtin.template', 'corefile.j2') }}

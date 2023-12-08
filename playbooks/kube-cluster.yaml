@@ -100,6 +100,9 @@
     - role: k8s/label-node
       tags:
         - label-node
+    - role: k8s/coredns
+      tags:
+        - coredns
     - role: k8s/metrics-server
       tags:
         - metrics-server
