@@ -11,6 +11,15 @@ tasks:
       - ansible-playbook -i inventory/cluster-hosts.yaml --vault-password-file .vault_password
         --tags "{{.TAGS}}" {{.CLI_ARGS}} playbooks/kube-cluster.yaml
 
+  local-ops:
+    desc: execute localhost ops task
+    internal: true
+    vars:
+      TAGS: '{{default "all" .TAGS}}'
+    cmds:
+      - ansible-playbook -i inventory/local-hosts.yaml --tags "{{.TAGS}}" {{.CLI_ARGS}}
+        --vault-password-file .vault_password playbooks/local-ops.yaml
+
   # 1 prepare environment
   1:
     desc: prepare kubernetes environment
@@ -130,6 +139,7 @@ tasks:
       - task: 3.6
       - task: 3.7
       - task: 3.8
+      - task: 3.9
 
   3.1:
     desc: nfs pvc as kubernetes cluster storage
@@ -153,34 +163,44 @@ tasks:
           TAGS: cert-manager
 
   3.4:
+    desc: config cluster cert
+    cmds:
+      - task: local-ops
+        vars:
+          TAGS: ca-download
+      - task: kube-cluster
+        vars:
+          TAGS: cert
+
+  3.5:
     desc: create ingress-nginx
     cmds:
       - task: kube-cluster
         vars:
           TAGS: ingress-nginx
 
-  3.5:
+  3.6:
     desc: create kubernetes dashboard
     cmds:
       - task: kube-cluster
         vars:
           TAGS: dashboard
 
-  3.6:
+  3.7:
     desc: install harbor helm chart
     cmds:
       - task: kube-cluster
         vars:
           TAGS: harbor
 
-  3.7:
+  3.8:
     desc: install mongodb database
     cmds:
       - task: kube-cluster
         vars:
           TAGS: mongodb
 
-  3.8:
+  3.9:
     desc: create kubevela
     cmds:
       - task: kube-cluster

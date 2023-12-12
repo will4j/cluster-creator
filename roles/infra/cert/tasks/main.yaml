@@ -16,6 +16,3 @@
   notify:
     - Update ca certificates
     - Restart containerd
-
-- name: Update ca certificates immediately if necessary
-  ansible.builtin.meta: flush_handlers
