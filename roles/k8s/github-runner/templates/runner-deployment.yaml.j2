@@ -1,0 +1,11 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: "{{ github_runner.organization }}-runner-deploy"
+spec:
+  replicas: 1
+  template:
+    spec:
+      organization: "{{ github_runner.organization }}"
+      labels:
+        - "{{ github_runner.organization }}-cloud"

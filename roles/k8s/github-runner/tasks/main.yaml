@@ -1,0 +1,14 @@
+---
+# https://github.com/actions/actions-runner-controller/blob/master/docs/quickstart.md
+- name: Installing the actions-runner-controller chart
+  run_once: true
+  delegate_to: localhost
+  kubernetes.core.helm:
+    release_name: actions-runner-controller
+    release_namespace: actions-runner-system
+    create_namespace: true
+    # https://artifacthub.io/packages/helm/actions-runner-controller/actions-runner-controller
+    chart_ref: ../helm/charts/actions-runner-controller-0.23.7.tgz
+    values: "{{ lookup('ansible.builtin.template', 'controller-values.yaml.j2') | from_yaml }}"
+    state: present
+    wait: true

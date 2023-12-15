@@ -95,6 +95,9 @@ registry:
   mirror_quay_io: quay.m.daocloud.io
   mirror_registry_k8s_io: k8s.m.daocloud.io
 
+git_repo:
+  type: github
+
 gitlab:
   enabled: false
   host: "gitlab.{{ cluster.apex_domain }}"
@@ -110,3 +113,10 @@ gitlab:
   gitaly:
     storage_class: "{{ storage_class }}"
     storage_size: 30Gi
+
+github_runner:
+  enabled: false
+  organization: "{{ vault_github_runner_organization }}"
+  auth_app_id: "{{ vault_github_runner_app_id }}"
+  auth_app_installation_id: "{{ vault_github_runner_app_installation_id }}"
+  auth_app_private_key: "{{ vault_github_runner_app_private_key }}"

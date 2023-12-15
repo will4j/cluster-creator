@@ -1,0 +1,6 @@
+# https://github.com/actions/actions-runner-controller/blob/v0.27.6/charts/actions-runner-controller/values.yaml
+authSecret:
+  enabled: true
+  github_app_id: "{{ github_runner.auth_app_id }}"
+  github_app_installation_id: "{{ github_runner.auth_app_installation_id }}"
+  github_app_private_key: "{{ github_runner.auth_app_private_key }}"

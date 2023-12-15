@@ -48,3 +48,4 @@
 ## 参考资料
 1. [Ansible Builtin Collection Document](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html)
 2. [KubeVela 客户端安装](https://kubevela.io/docs/installation/kubernetes/#install-vela-cli)
+3. [Ansible Inventory 指南](https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html#organizing-host-and-group-variables)
